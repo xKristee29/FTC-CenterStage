@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.Range;
 
 import org.opencv.core.Mat;
 
@@ -33,6 +34,9 @@ public class TankDriveChassis {
 
     public double motorPowerLeft = 0, motorPowerRight = 0;
     public double accelerationFactor = 0.02;
+
+    public double forwardSpeedLimit = 0.5;
+    public double rotationalSpeedLimit = 0.5;
 
     public Thread localizerThread = null;
 
@@ -68,17 +72,28 @@ public class TankDriveChassis {
         resetGyro();
     }
 
+    public void setLimits(double fs, double rs){
+        forwardSpeedLimit = fs;
+        rotationalSpeedLimit = rs;
+    }
+
     public void setPower(double forwardSpeed, double rotationSpeed){
-        motorPowerLeft = forwardSpeed + rotationSpeed;
-        motorPowerRight = forwardSpeed - rotationSpeed;
+        double fs = Range.clip(forwardSpeed, -forwardSpeedLimit, forwardSpeedLimit);
+        double rs = Range.clip(rotationSpeed, -rotationalSpeedLimit, rotationalSpeedLimit);
+
+        motorPowerLeft = fs + rs;
+        motorPowerRight = fs - rs;
 
         leftMotor.set(motorPowerLeft);
         rightMotor.set(motorPowerRight);
     }
 
     public void setPowerRamp(double forwardSpeed, double rotationSpeed){
-        double targetPowerLeft = forwardSpeed + rotationSpeed;
-        double targetPowerRight = forwardSpeed - rotationSpeed;
+        double fs = Range.clip(forwardSpeed, -forwardSpeedLimit, forwardSpeedLimit);
+        double rs = Range.clip(rotationSpeed, -rotationalSpeedLimit, rotationalSpeedLimit);
+
+        double targetPowerLeft = fs + rs;
+        double targetPowerRight = fs - rs;
 
         double deltaLeft = targetPowerLeft - motorPowerLeft;
         double deltaRight = targetPowerRight - motorPowerRight;
@@ -123,8 +138,8 @@ public class TankDriveChassis {
 
         double radians = Math.toRadians(theta);
 
-        x += distance * Math.cos(radians);
-        y += distance * Math.sin(radians);
+        x += distance * Math.sin(radians);
+        y += distance * Math.cos(radians);
     }
 
     public void startAsyncLocalization(){
@@ -172,8 +187,8 @@ public class TankDriveChassis {
 
                 double radians = Math.toRadians(theta);
 
-                x += distance * Math.cos(radians);
-                y += distance * Math.sin(radians);
+                x += distance * Math.sin(radians);
+                y += distance * Math.cos(radians);
             }
         }
     }

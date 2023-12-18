@@ -18,14 +18,16 @@ public class DrivePIDUnitTest extends LinearOpMode {
 
     GamepadEx gp1;
 
-    PIDController pidGyro = new PIDController(0,0,0);
-    PIDController pidDrive = new PIDController(0,0,0);
+    PIDController pidGyro = new PIDController(0, 0, 0);
+    PIDController pidDrive = new PIDController(0, 0, 0);
 
     public void initialize(){
         telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         robot = new TankDriveChassis(hardwareMap);
 
         robot.init();
+
+        robot.setLimits(0.5,0.4);
 
         gp1 = new GamepadEx(gamepad1);
     }
@@ -52,32 +54,35 @@ public class DrivePIDUnitTest extends LinearOpMode {
                         ChassisConstants.DRIVE_PID.i,
                         ChassisConstants.DRIVE_PID.d);
 
-                double targetX = 90;
-                double targetY = 30;
+                double targetX = 30;
+                double targetY = 90;
 
                 double errorX = targetX - robot.x;
                 double errorY = targetY - robot.y;
 
-                double distance = (int)Math.sqrt(errorX * errorX + errorY * errorY);
+                double distance = (int)Math.hypot(errorX, errorY);
 
-                double targetAngle = ((int)Math.toDegrees(Math.atan2(errorY, errorX)) + 360) % 360;
+                double targetAngle = ((int)Math.toDegrees(Math.atan2(errorX, errorY)) + 360) % 360;
                 double angleError = targetAngle - robot.theta;
 
-                angleError = -Utils.minAbs(angleError, angleError - Math.signum(angleError) * 360);
+                angleError = Utils.minAbs(angleError, angleError - Math.signum(angleError) * 360);
 
-                if(Math.abs(angleError) > 90) {
-                    angleError -= Math.signum(angleError) * 180;
+                if(Math.abs(angleError) > 130){
                     distance = -distance;
                 }
 
-                if(Math.abs(distance) <= ChassisConstants.toleranceXY){
-                    throw new InterruptedException();
+                if(Math.abs(distance) <= ChassisConstants.targetRadius) {
+                    angleError = 0;
                 }
 
-                double powerR = pidGyro.calculate(angleError);
-                double powerX = pidDrive.calculate(distance);
+                if(Math.abs(distance) <= ChassisConstants.toleranceXY){
+                    distance = 0;
+                }
 
-                robot.setPowerRamp(-powerX, powerR);
+                double powerR = -pidGyro.calculate(angleError);
+                double powerX = -pidDrive.calculate(distance);
+
+                robot.setPowerRamp(powerX, powerR);
 
                 telemetry.addData("x", robot.x);
                 telemetry.addData("y", robot.y);

@@ -25,7 +25,7 @@ public class KodikationAutoTest extends LinearOpMode {
 
         robot.init();
 
-        controller = new TankDriveController(robot);
+        controller = new TankDriveController(robot,telemetry);
 
         gp1 = new GamepadEx(gamepad1);
     }
