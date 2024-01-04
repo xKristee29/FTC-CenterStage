@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.testing;
+package org.firstinspires.ftc.teamcode.testing.kristee;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -49,17 +49,24 @@ public class PathUnitTest extends LinearOpMode {
             robot.startAsyncLocalization();
 
             Path path = new Path(new Point(0,0))
-                    .customSplineTo(new Point(-70,65,270),0.68,-0.19,0,-0.4, 2);
+                    .customSplineTo(new Point(-210, 120),
+                            0.5,
+                            -0.31,
+                            0.22,
+                            0.5,
+                            8
+                    );
 
             controller.run(path);
 
             while(!isStopRequested() && controller.isRunning());
 
+
+
             throw new InterruptedException();
         }
         catch (InterruptedException e){
             controller.interrupt();
-            controller = null;
             robot.killSwitch();
         }
 

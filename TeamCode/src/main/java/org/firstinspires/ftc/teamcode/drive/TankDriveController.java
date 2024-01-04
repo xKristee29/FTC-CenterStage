@@ -184,10 +184,6 @@ public class TankDriveController {
                             distance = 0;
                         }
 
-                        //if(pidDrive.atSetPoint() && angleError == 0 && path.waypoints.peek() == null) check = true;
-
-                        //if(angleError == 0 && Math.abs(distance) <= ChassisConstants.targetRadius && path.waypoints.peek() != null) check = true;
-
                         double powerR = -pidGyro.calculate(angleError);
                         double powerX = Math.abs(powerR) < 0.2 ? -pidDrive.calculate(distance) : 0;
 
