@@ -184,12 +184,10 @@ public class TankDriveController {
                             distance = 0;
                         }
 
-                        double powerR = -pidGyro.calculate(angleError);
-                        double powerX = Math.abs(powerR) < 0.2 ? -pidDrive.calculate(distance) : 0;
+                        double powerR = Math.abs(angleError) > ChassisConstants.toleranceR * 0.7 ? -pidGyro.calculate(angleError) : 0;
+                        double powerX = Math.abs(angleError) < ChassisConstants.toleranceR ? -pidDrive.calculate(distance) : 0;
 
-                        if((Math.abs(powerX) < 0.2 || (Math.abs(distance) <= ChassisConstants.toleranceXY &&
-                                path.waypoints.peek() != null))
-                                && Math.abs(powerR) < 0.1) check = true;
+                        if(Math.abs(powerX) < 0.12 && distance == 0 && Math.abs(powerR) < 0.1) check = true;
 
                         robot.setPowerRamp(powerX, powerR);
 

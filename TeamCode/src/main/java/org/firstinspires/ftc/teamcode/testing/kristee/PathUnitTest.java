@@ -49,13 +49,14 @@ public class PathUnitTest extends LinearOpMode {
             robot.startAsyncLocalization();
 
             Path path = new Path(new Point(0,0))
-                    .customSplineTo(new Point(-210, 120),
+                    //.goTo(new Point(-60, 100, 270));
+                    .customSplineTo(new Point(-60, 100, 270),
                             0.5,
-                            -0.31,
-                            0.22,
-                            0.5,
-                            8
-                    );
+                            0.12,
+                            0.03,
+                            0.02,
+                            2
+                    );//*/
 
             controller.run(path);
 
