@@ -43,6 +43,22 @@ public class TankDriveController {
         return runThread.isAlive();
     }
 
+    public double getDriveCorrection(double error){
+        pidDrive.setPID(ChassisConstants.DRIVE_PID.p,
+                ChassisConstants.DRIVE_PID.i,
+                ChassisConstants.DRIVE_PID.d);
+
+        return pidDrive.calculate(error);
+    }
+
+    public double getRotationalCorrection(double error){
+        pidGyro.setPID(ChassisConstants.HEADING_PID.p,
+                ChassisConstants.HEADING_PID.i,
+                ChassisConstants.HEADING_PID.d);
+
+        return pidGyro.calculate(error);
+    }
+
     public void setPath(Path path){
         this.path = path;
     }
@@ -187,7 +203,7 @@ public class TankDriveController {
                         double powerR = Math.abs(angleError) > ChassisConstants.toleranceR * 0.7 ? -pidGyro.calculate(angleError) : 0;
                         double powerX = Math.abs(angleError) < ChassisConstants.toleranceR ? -pidDrive.calculate(distance) : 0;
 
-                        if(Math.abs(powerX) < 0.12 && distance == 0 && Math.abs(powerR) < 0.1) check = true;
+                        if(Math.abs(powerX) < 0.2 && distance == 0 && Math.abs(powerR) < 0.2) check = true;
 
                         robot.setPowerRamp(powerX, powerR);
 

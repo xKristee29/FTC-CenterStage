@@ -3,21 +3,29 @@ package org.firstinspires.ftc.teamcode.drive;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class ArmController {
 
     MotorEx motorBrat;
-    Servo servoIntake;
+    Servo servoIntake, servoLaunch;
 
     Thread runThread;
+    Thread distThread;
 
-    public static double kP = 0.008;
-    public static double threshold = 50;
+    DistanceSensor distLeft, distRight;
 
-    public static double speedFactor = 0.6;
+    double dLeft, lastdLeft, dRight, lastdRight, dist, lastDist, targetDist = 24;
+
+    public static double kP = 0.004;
+    public static double threshold = 10;
+
+    public static double speedFactor = 0.2;
 
     boolean killController;
 
@@ -33,16 +41,33 @@ public class ArmController {
         }
     }
 
-    public static enum IntakePosition{
-        HOME(0.5),
-        GRAB(1),
-        THROW(0);
-
+    public static enum PositionDistance{
+        LEVEL1(24),
+        LEVEL2(8);
         public final double val;
+        PositionDistance(double val){
+            this.val = val;
+        }
+    }
 
+    public static enum IntakePosition{
+        GRAB(1),
+        MID(0.4),
+        THROW(0);
+        public final double val;
         IntakePosition(double val){
             this.val = val;
         }
+    }
+
+    public static enum LauncherPosition{
+        LAUNCH(0.5),
+        IDLE(1);
+        public final double val;
+        LauncherPosition(double val){
+            this.val = val;
+        }
+
     }
 
     public ArmController(HardwareMap hardwareMap){
@@ -56,15 +81,28 @@ public class ArmController {
         motorBrat.set(0);
 
         servoIntake = hardwareMap.servo.get("servo_intake");
+        servoLaunch = hardwareMap.servo.get("servo_launch");
 
+        distLeft = hardwareMap.get(DistanceSensor.class, "distance_left");
+        distRight = hardwareMap.get(DistanceSensor.class, "distance_right");
     }
 
     public void setIntakePosition(IntakePosition target){
         servoIntake.setPosition(target.val);
     }
 
+    public void setLauncherPosition(LauncherPosition target){
+        servoLaunch.setPosition(target.val);
+    }
+
     public void setTarget(Position target){
         motorBrat.setTargetPosition(target.val);
+        if(target == Position.LEVEL1){
+            targetDist = PositionDistance.LEVEL1.val;
+        }
+        if(target == Position.LEVEL2){
+            targetDist = PositionDistance.LEVEL2.val;
+        }
     }
 
     public void startPositioning(){
@@ -72,16 +110,37 @@ public class ArmController {
         runThread.start();
     }
 
+    public void startMeasuring(){
+        distThread = new Thread(new DistanceReader());
+        distThread.start();
+    }
+
     public void interrupt(){
         if(runThread != null){
             runThread.interrupt();
-            killController = true;
         }
+        if(distThread != null){
+            distThread.interrupt();
+        }
+        killController = true;
     }
 
     public boolean isRunning(){
         if(runThread == null) return false;
         return runThread.isAlive();
+    }
+
+    public boolean isDistRunning(){
+        if(distThread == null) return false;
+        return distThread.isAlive();
+    }
+
+    public double getDist(){
+        return dist;
+    }
+
+    public double getDistError(){
+        return targetDist - dist;
     }
 
     public int getPosition(){
@@ -108,4 +167,27 @@ public class ArmController {
         }
     }
 
+    public class DistanceReader implements Runnable{
+
+        public DistanceReader(){
+            killController = false;
+            lastdLeft = dLeft = distLeft.getDistance(DistanceUnit.CM);
+            lastdRight = dRight = distRight.getDistance(DistanceUnit.CM);
+            lastDist = dist = (dLeft + dRight) * 0.5;
+        }
+
+        @Override
+        public void run() {
+            while(!killController){
+                lastdLeft = dLeft;
+                lastdRight = dRight;
+                lastDist = dist;
+
+                dLeft = (lastdLeft + distLeft.getDistance(DistanceUnit.CM)) * 0.5;
+                dRight = (lastdRight + distRight.getDistance(DistanceUnit.CM)) * 0.5;
+
+                dist = (lastDist + (dLeft + dRight) * 0.5) * 0.5;
+            }
+        }
+    }
 }

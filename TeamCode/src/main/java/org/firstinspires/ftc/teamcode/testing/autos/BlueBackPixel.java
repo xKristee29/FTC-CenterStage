@@ -9,9 +9,10 @@ import org.firstinspires.ftc.teamcode.drive.ArmController;
 import org.firstinspires.ftc.teamcode.drive.Path;
 import org.firstinspires.ftc.teamcode.drive.Point;
 import org.firstinspires.ftc.teamcode.drive.Robot;
+import org.firstinspires.ftc.teamcode.drive.Utils;
 
 @Autonomous
-public class RedBackPixel extends LinearOpMode {
+public class BlueBackPixel extends LinearOpMode {
 
     Robot robot;
     public void initialize(){
@@ -21,7 +22,6 @@ public class RedBackPixel extends LinearOpMode {
         robot.init();
         robot.drive.setLimits(0.5,0.3);
     }
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -33,10 +33,12 @@ public class RedBackPixel extends LinearOpMode {
             waitForStart();
 
             robot.armController.startPositioning();
+            robot.armController.startMeasuring();
             robot.drive.startAsyncLocalization();
 
+            // Se duce in fata tablei
             Path path1 = new Path(new Point(0,0))
-                    .goTo(new Point(60,70,90));
+                    .goTo(new Point(-60,70,270));
 
             robot.driveController.run(path1);
 
@@ -44,13 +46,47 @@ public class RedBackPixel extends LinearOpMode {
                 if(isStopRequested()) throw new InterruptedException();
             }
 
+            ///////////////////////////////
+
+            // Se pune langa tabla
+            while(Math.abs(robot.armController.getDistError()) > 3){
+                double error = 270 - robot.drive.theta;
+
+                error = Utils.minAbs(error, error - Math.signum(error) * 360);
+
+                telemetry.addData("Dist", robot.armController.getDist());
+                telemetry.addData("Err", robot.armController.getDistError());
+                telemetry.update();
+
+                robot.drive.setPower(
+                        0.3 * -Math.signum(robot.armController.getDistError()),
+                        -robot.driveController.getRotationalCorrection(error * 0.3)
+                );
+
+                if(isStopRequested()) throw new InterruptedException();
+            }
+            robot.drive.setPower(0,0);
+
+
+            robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
+
+            Thread.sleep(400);
+
             robot.armController.setTarget(ArmController.Position.LEVEL1);
 
             while(!robot.armController.isPositioned()){
                 if(isStopRequested()) throw new InterruptedException();
             }
 
-            Thread.sleep(1000);
+            Thread.sleep(700);
+
+            /////////////////////////////
+
+
+
+            robot.armController.setIntakePosition(ArmController.IntakePosition.THROW);
+
+            Thread.sleep(700);
 
             robot.armController.setTarget(ArmController.Position.HOME);
 
@@ -58,9 +94,10 @@ public class RedBackPixel extends LinearOpMode {
                 if(isStopRequested()) throw new InterruptedException();
             }
 
+            // Ma parchez in stanga
             Path path2 = new Path(path1.lastPoint)
-                    .goTo(new Point(80,10,90))
-                    .goTo(new Point(120,10));
+                    .goTo(new Point(-80,10,270))
+                    .goTo(new Point(-120,10));
 
             robot.driveController.run(path2);
 
@@ -68,11 +105,11 @@ public class RedBackPixel extends LinearOpMode {
                 if(isStopRequested()) throw new InterruptedException();
             }
 
+
             throw new InterruptedException();
         }
         catch (InterruptedException e){
             robot.killSwitch();
         }
-
     }
 }

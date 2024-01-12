@@ -33,7 +33,7 @@ public class TankDriveChassis {
     public double x = 0, y = 0, theta = 0;
 
     public double motorPowerLeft = 0, motorPowerRight = 0;
-    public static double accelerationFactor = 0.015;
+    public static double accelerationFactor = 0.025;
 
     public double forwardSpeedLimit = 0.5;
     public double rotationalSpeedLimit = 0.5;
