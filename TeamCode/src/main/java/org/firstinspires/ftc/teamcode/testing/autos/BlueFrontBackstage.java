@@ -20,7 +20,7 @@ public class BlueFrontBackstage extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.5,0.2);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class BlueFrontBackstage extends LinearOpMode {
             // L path - lasam robotul la 225 grade pentru a merge pe diagonala
             Path path1 = new Path(new Point(0,0))
                     .goTo(new Point(0,140,270))
-                    .goTo(new Point(-200,140,240));
+                    .goTo(new Point(-210,140,240));
 
             robot.driveController.run(path1);
 

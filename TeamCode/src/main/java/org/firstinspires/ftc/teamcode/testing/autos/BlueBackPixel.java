@@ -20,7 +20,7 @@ public class BlueBackPixel extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.5,0.2);
     }
 
     @Override

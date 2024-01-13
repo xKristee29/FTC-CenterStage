@@ -20,7 +20,7 @@ public class RedFrontPixel extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.5,0.2);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class RedFrontPixel extends LinearOpMode {
 
             // L path
             Path path1 = new Path(new Point(0,0))
-                    .goTo(new Point(0,140,270))
-                    .goTo(new Point(-140,140,225));
+                    .goTo(new Point(0,140,90))
+                    .goTo(new Point(140,140,145));
 
             robot.driveController.run(path1);
 
@@ -48,7 +48,7 @@ public class RedFrontPixel extends LinearOpMode {
             }
 
             Path path2 = new Path(path1.lastPoint)
-                    .goTo(new Point(-210,260,270));
+                    .goTo(new Point(210,80,90));
 
             robot.driveController.run(path2);
 
@@ -57,7 +57,7 @@ public class RedFrontPixel extends LinearOpMode {
             }
 
             // Se pune langa tabla
-            while(Math.abs(robot.armController.getDistError()) > 3){
+            while(Math.abs(robot.armController.getDistError()) > 2){
                 double error = 90 - robot.drive.theta;
 
                 error = Utils.minAbs(error, error - Math.signum(error) * 360);
@@ -102,21 +102,6 @@ public class RedFrontPixel extends LinearOpMode {
             }
 
             /////////////////////////////
-
-            /*Ne parcam - actually ne parcam atunci cand venim la tabla sa punem pixelii
-            while(!robot.armController.isPositioned()){
-                if(isStopRequested()) throw new InterruptedException();
-            }
-
-            Path path3 = new Path(path2.lastPoint)
-                    .goTo(new Point(-230,180,90));
-
-            robot.driveController.run(path3);
-
-            while(robot.driveController.isRunning()){
-                if(isStopRequested()) throw new InterruptedException();
-            }
-            */
             throw new InterruptedException();
         }
         catch (InterruptedException e){

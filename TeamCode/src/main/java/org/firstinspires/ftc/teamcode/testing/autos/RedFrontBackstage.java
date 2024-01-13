@@ -20,7 +20,7 @@ public class RedFrontBackstage extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.5,0.2);
     }
 
     @Override
@@ -36,10 +36,10 @@ public class RedFrontBackstage extends LinearOpMode {
             robot.armController.startMeasuring();
             robot.drive.startAsyncLocalization();
 
-            // L path - lasam robotul la 225 grade pentru a merge pe diagonala
+            // L path
             Path path1 = new Path(new Point(0,0))
                     .goTo(new Point(0,140,90))
-                    .goTo(new Point(200,140,120));
+                    .goTo(new Point(210,140,120));
 
             robot.driveController.run(path1);
 
@@ -74,7 +74,7 @@ public class RedFrontBackstage extends LinearOpMode {
             }
 
             Path path2 = new Path(new Point(0,0))
-                    .goTo(new Point(240,140,90));
+                    .goTo(new Point(240,140,120));
 
             robot.driveController.run(path2);
 
