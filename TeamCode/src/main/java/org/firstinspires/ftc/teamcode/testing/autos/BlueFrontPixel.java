@@ -42,13 +42,16 @@ public class BlueFrontPixel extends LinearOpMode {
                     .goTo(new Point(-140,140,225));
 
             robot.driveController.run(path1);
+
             //(-210,80)
             while(robot.driveController.isRunning()){
                 if(isStopRequested()) throw new InterruptedException();
             }
 
+            // Thread.sleep(1000);
+
             Path path2 = new Path(path1.lastPoint)
-                    .goTo(new Point(-210,80,270));
+                    .goTo(new Point(-210,65,270));
 
             robot.driveController.run(path2);
 
@@ -58,7 +61,7 @@ public class BlueFrontPixel extends LinearOpMode {
 
             // Se pune langa tabla
             while(Math.abs(robot.armController.getDistError()) > 3){
-                double error = 90 - robot.drive.theta;
+                double error = 270 - robot.drive.theta;
 
                 error = Utils.minAbs(error, error - Math.signum(error) * 360);
 
@@ -74,6 +77,10 @@ public class BlueFrontPixel extends LinearOpMode {
                 if(isStopRequested()) throw new InterruptedException();
             }
             robot.drive.setPower(0,0); //oprim motoarele (stie Cristi why :D )
+
+            robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
+
+            Thread.sleep(400);
 
             robot.armController.setTarget(ArmController.Position.LEVEL1);
 
@@ -101,19 +108,19 @@ public class BlueFrontPixel extends LinearOpMode {
 
             /////////////////////////////
 
-            /* Trebuie sa parcam?
+            /*/Ne parcam
             while(!robot.armController.isPositioned()){
                 if(isStopRequested()) throw new InterruptedException();
             }
 
-            Path path3 = new Path(path2.lastpoint)
+            Path path3 = new Path(path2.lastPoint)
                     .goTo(new Point(-220,60,180));
 
-            robot.driveController.run(path2);
-            */
+            robot.driveController.run(path3);
+
             while(robot.driveController.isRunning()){
                 if(isStopRequested()) throw new InterruptedException();
-            }
+            }*/
 
             throw new InterruptedException();
         }

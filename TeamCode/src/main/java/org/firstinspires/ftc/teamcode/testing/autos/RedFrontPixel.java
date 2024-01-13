@@ -42,13 +42,13 @@ public class RedFrontPixel extends LinearOpMode {
                     .goTo(new Point(-140,140,225));
 
             robot.driveController.run(path1);
-            //(-210,80)
+
             while(robot.driveController.isRunning()){
                 if(isStopRequested()) throw new InterruptedException();
             }
 
             Path path2 = new Path(path1.lastPoint)
-                    .goTo(new Point(-210,270,270));
+                    .goTo(new Point(-210,260,270));
 
             robot.driveController.run(path2);
 
@@ -75,6 +75,10 @@ public class RedFrontPixel extends LinearOpMode {
             }
             robot.drive.setPower(0,0); //oprim motoarele (stie Cristi why :D )
 
+            robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
+
+            Thread.sleep(400);
+
             robot.armController.setTarget(ArmController.Position.LEVEL1);
 
             while(!robot.armController.isPositioned()){
@@ -97,24 +101,22 @@ public class RedFrontPixel extends LinearOpMode {
                 if(isStopRequested()) throw new InterruptedException();
             }
 
-            Thread.sleep(700);
-
             /////////////////////////////
 
-            /* Trebuie sa parcam?
+            /*Ne parcam - actually ne parcam atunci cand venim la tabla sa punem pixelii
             while(!robot.armController.isPositioned()){
                 if(isStopRequested()) throw new InterruptedException();
             }
 
-            Path path3 = new Path(path2.lastpoint)
+            Path path3 = new Path(path2.lastPoint)
                     .goTo(new Point(-230,180,90));
 
-            robot.driveController.run(path2);
-            */
+            robot.driveController.run(path3);
+
             while(robot.driveController.isRunning()){
                 if(isStopRequested()) throw new InterruptedException();
             }
-
+            */
             throw new InterruptedException();
         }
         catch (InterruptedException e){
