@@ -9,8 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.drive.ArmController;
 import org.firstinspires.ftc.teamcode.drive.Robot;
-import org.firstinspires.ftc.teamcode.drive.TankDriveChassis;
-import org.firstinspires.ftc.teamcode.drive.Utils;
 
 @TeleOp
 public class ControlTeleghidat extends LinearOpMode {
@@ -67,7 +65,7 @@ public class ControlTeleghidat extends LinearOpMode {
                 } else robot.drive.setPower(fs * 0.5, rs * 0.3);
 
                 if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
-                    robot.armController.setTarget(ArmController.Position.LAUNCH);
+                    robot.armController.setTarget(ArmController.Position.LEVEL3);
                 }
                 if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_LEFT) ||
                         gp2.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
@@ -85,7 +83,7 @@ public class ControlTeleghidat extends LinearOpMode {
 
                 if(gp2.wasJustPressed(GamepadKeys.Button.A)){
                     robot.armController.setTarget(ArmController.Position.HOME);
-                    robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
+                    robot.armController.setIntakePosition(ArmController.IntakePosition.THROW);
                 }
 
                 if(gp2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){

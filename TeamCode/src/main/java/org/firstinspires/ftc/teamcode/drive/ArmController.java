@@ -13,14 +13,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class ArmController {
 
     MotorEx motorBrat;
-    Servo servoIntake, servoLaunch;
+    Servo servoIntake, servoLaunch, servoPixel;
 
     Thread runThread;
     Thread distThread;
 
     DistanceSensor distLeft, distRight;
 
-    double dLeft, lastdLeft, dRight, lastdRight, dist, lastDist, targetDist = 22;
+    double dLeft, lastdLeft, dRight, lastdRight, dist, lastDist, targetDist = 28;
 
     public static double kP = 0.004;
     public static double threshold = 10;
@@ -31,13 +31,13 @@ public class ArmController {
 
     public static enum Position{
         HOME(0),
-        LEVEL1(2000),
-        LEVEL2(1600),
-        HANG(1230),
-        LAUNCH(750);
+        LEVEL1(3500),
+        LEVEL2(3100),
+        HANG(2100),
+        LEVEL3(2800);
         public final int val;
         Position(int val){
-            this.val = -val;
+            this.val = val;
         }
     }
 
@@ -61,7 +61,7 @@ public class ArmController {
     }
 
     public static enum LauncherPosition{
-        LAUNCH(0.5),
+        LAUNCH(0.4),
         IDLE(1);
         public final double val;
         LauncherPosition(double val){
@@ -82,6 +82,7 @@ public class ArmController {
 
         servoIntake = hardwareMap.servo.get("servo_intake");
         servoLaunch = hardwareMap.servo.get("servo_launch");
+        servoPixel = hardwareMap.servo.get("servo_pixel");
 
         distLeft = hardwareMap.get(DistanceSensor.class, "distance_left");
         distRight = hardwareMap.get(DistanceSensor.class, "distance_right");
@@ -89,6 +90,10 @@ public class ArmController {
 
     public void setIntakePosition(IntakePosition target){
         servoIntake.setPosition(target.val);
+    }
+
+    public void dropPixel(){
+        servoPixel.setPosition(0.6);
     }
 
     public void setLauncherPosition(LauncherPosition target){
