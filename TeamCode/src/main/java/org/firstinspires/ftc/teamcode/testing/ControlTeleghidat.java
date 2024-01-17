@@ -66,6 +66,7 @@ public class ControlTeleghidat extends LinearOpMode {
 
                 if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
                     robot.armController.setTarget(ArmController.Position.LEVEL3);
+                    robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
                 }
                 if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_LEFT) ||
                         gp2.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
