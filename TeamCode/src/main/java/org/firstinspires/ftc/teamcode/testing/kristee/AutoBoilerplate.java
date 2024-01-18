@@ -19,13 +19,12 @@ public class AutoBoilerplate extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.5,0.5);
     }
 
 
     @Override
     public void runOpMode() throws InterruptedException {
-
         try{
 
             initialize();

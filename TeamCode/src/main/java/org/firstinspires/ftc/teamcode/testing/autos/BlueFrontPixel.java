@@ -93,7 +93,6 @@ public class BlueFrontPixel extends LinearOpMode {
             /////////////////////////////
 
 
-
             robot.armController.setIntakePosition(ArmController.IntakePosition.THROW);
 
             Thread.sleep(700);
