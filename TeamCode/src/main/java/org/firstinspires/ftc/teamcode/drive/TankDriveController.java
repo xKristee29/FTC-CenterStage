@@ -209,7 +209,7 @@ public class TankDriveController {
                         double powerR = Math.tanh(-pidGyro.calculate(angleError));
                         double powerX = (1 - Math.abs(powerR)) * Math.tanh(-pidDrive.calculate(distance));
 
-                        if(Math.abs(powerX) < 0.2 && distance < 2 * ChassisConstants.toleranceXY) check = true;
+                        if(Math.abs(powerX) < 0.2 && distance < ChassisConstants.toleranceXY) check = true;
 
                         robot.setPowerRamp(powerX, powerR);
 
@@ -225,7 +225,7 @@ public class TankDriveController {
 
                         double powerR = Math.tanh(-pidGyro.calculate(error));
 
-                        if(Math.abs(error) < 5) targetPoint.theta = Double.NaN;
+                        if(Math.abs(powerR) < 0.2) targetPoint.theta = Double.NaN;
 
                         robot.setPowerRamp(0, powerR);
                     }

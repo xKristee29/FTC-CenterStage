@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.testing.sanke.CenterStageCVDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -15,7 +16,7 @@ public class KodiCV {
     private HardwareMap hardwareMap;
 
     private OpenCvCamera webcam = null;
-    public OpenCVDetector detector = null;
+    public CenterStageCVDetection detector = null;
     private int cameraMonitorViewId;
     private boolean isRunning = true;
 
@@ -26,7 +27,7 @@ public class KodiCV {
     }
 
     public void start(){
-        detector = new OpenCVDetector(telemetry);
+        detector = new CenterStageCVDetection(telemetry);
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         webcam.setPipeline(detector);

@@ -5,10 +5,14 @@ import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Config
 public class CenterStageCVDetection extends OpenCvPipeline {
@@ -25,25 +29,78 @@ public class CenterStageCVDetection extends OpenCvPipeline {
     Mat mat = new Mat();
 
     public enum Location {
-        LEFT,
-        RIGHT,
-        MIDDLE
+        LEFT("Left"),
+        RIGHT("Right"),
+        MIDDLE("Mid");
+
+        private final String str;
+        Location(String text){
+            str = text;
+        }
     }
 
     public Location location;
 
     // ROIs
-    //static final Rect Left_ROI = new Rect(10, 100, 105, 200);
-    static final Rect Right_ROI = new Rect(120, 100, 205, 200);
-    static final Rect Middle_ROI = new Rect(220, 100, 310, 200);
+    static final Rect Left_ROI = new Rect(new Point(35, 125), new Point(85, 175));
+    static final Rect Middle_ROI = new Rect(new Point(120, 100), new Point(205, 175));
+    static final Rect Right_ROI = new Rect(new Point(235, 125), new Point(285, 175));
 
     public CenterStageCVDetection(Telemetry t) {
         telemetry = t;
     }
 
+    double threshold = 0.5;
+
     @Override
-    public Mat processFrame(Mat input) {
-        mat.release(); // Release the previous Mat to avoid memory leaks
+    public Mat processFrame(Mat input){
+
+        Mat mid = input.submat(Left_ROI);
+        Mat right = input.submat(Right_ROI);
+
+        telemetry.addData("H",input.rows());
+        telemetry.addData("W",input.cols());
+        telemetry.addLine();
+
+        List<Mat> chanMid = new ArrayList<Mat>(), chanRight = new ArrayList<Mat>();
+        Core.split(mid, chanMid);
+        Core.split(right, chanRight);
+
+        double redMid = Core.sumElems(chanMid.get(0)).val[0] / 255 / Left_ROI.area();
+        double redRight = Core.sumElems(chanRight.get(0)).val[0] / 255 / Right_ROI.area();
+
+        double blueMid = Core.sumElems(chanMid.get(2)).val[0] / 255 / Left_ROI.area();
+        double blueRight = Core.sumElems(chanRight.get(2)).val[0] / 255 / Right_ROI.area();
+
+        boolean midProp = redMid > threshold || blueMid > threshold;
+        boolean rightProp = redRight > threshold || blueRight > threshold;
+
+        if(midProp){
+            location = Location.MIDDLE;
+        }
+        else if(rightProp){
+            location = Location.RIGHT;
+        }
+        else{
+            location = Location.LEFT;
+        }
+
+        telemetry.addData("Mid Red",redMid);
+        telemetry.addData("Right Red",redRight);
+        telemetry.addData("Mid Blue",blueMid);
+        telemetry.addData("Right Blue",blueRight);
+        telemetry.addLine();
+        telemetry.addData("Location", location.str);
+        telemetry.update();
+
+        Imgproc.rectangle(input, Left_ROI, new Scalar(255,255,255));
+        Imgproc.rectangle(input, Right_ROI, new Scalar(255,255,255));
+
+        return input;
+    }
+
+
+    public Mat processFrame2(Mat input) {
         mat = input.clone(); // Clone the input Mat
         //Varianta fara Left_ROI
 
@@ -62,11 +119,10 @@ public class CenterStageCVDetection extends OpenCvPipeline {
 
         //ne uitam dupa ambele culori (needz to be tested)
         //Core.inRange(mat, new Scalar(MINIMUM_BLUE_RED, MINIMUM_VALUES, MINIMUM_VALUES), new Scalar(MAXIMUM_BLUE_RED, MAXIMUM_VALUES, MAXIMUM_VALUES), mat);
-        Mat mat1 = mat.clone();
-        Mat mat2 = mat.clone();
-        Core.inRange(mat1, new Scalar(0, 0, 100), new Scalar(50, 50, 255), mat1); // Blue range
-        Core.inRange(mat2, new Scalar(100, 0, 0), new Scalar(255, 50, 50), mat2); // Red range
-        Core.bitwise_or(mat1,mat2, mat);//combine
+        Mat mat1 = null, mat2 = null;
+        Core.inRange(mat, new Scalar(0, 0, 100), new Scalar(50, 50, 255), mat1); // Blue range
+        Core.inRange(mat, new Scalar(100, 0, 0), new Scalar(255, 50, 50), mat2); // Red range
+        Core.add(mat1,mat2,mat);
 
         // Submatrices
         //Mat left = mat.submat(Left_ROI);
@@ -116,9 +172,14 @@ public class CenterStageCVDetection extends OpenCvPipeline {
         Scalar propColor = new Scalar(0, 0, 255);
 
         // Imgproc.rectangle(mat, Left_ROI, location == Location.Left ? pixelColor : propColor);
-        Imgproc.rectangle(mat, Middle_ROI, location == Location.MIDDLE ? pixelColor : propColor);
-        Imgproc.rectangle(mat, Right_ROI, location == Location.RIGHT ? pixelColor : propColor);
+        Imgproc.rectangle(input, Middle_ROI, location == Location.MIDDLE ? pixelColor : propColor);
+        Imgproc.rectangle(input, Right_ROI, location == Location.RIGHT ? pixelColor : propColor);
 
-        return mat;
+        mat.release(); // Release the previous Mat to avoid memory leaks
+        mat1.release(); // Release the previous Mat to avoid memory leaks
+        mat2.release(); // Release the previous Mat to avoid memory leaks
+
+
+        return input;
     }
 }

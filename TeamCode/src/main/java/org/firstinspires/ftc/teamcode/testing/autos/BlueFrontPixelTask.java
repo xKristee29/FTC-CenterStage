@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.Robot;
 import org.firstinspires.ftc.teamcode.testing.sanke.CenterStageCVDetection;
 import org.firstinspires.ftc.teamcode.testing.sanke.CenterStageCVDetection1;
 
-@Autonomous
+@Autonomous(group = "auto")
 public class BlueFrontPixelTask extends LinearOpMode {
 
     Robot robot;
@@ -20,7 +20,7 @@ public class BlueFrontPixelTask extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.5);
+        robot.drive.setLimits(0.5,0.3);
     }
 
 
