@@ -34,7 +34,8 @@ public class ArmController {
         LEVEL1(3500),
         LEVEL2(3100),
         HANG(2100),
-        LEVEL3(2800);
+        LEVEL3(2800),
+        AUTOPIXEL(3100);
         public final int val;
         Position(int val){
             this.val = val;
