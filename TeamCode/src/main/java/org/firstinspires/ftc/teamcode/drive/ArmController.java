@@ -20,7 +20,7 @@ public class ArmController {
 
     DistanceSensor distLeft, distRight;
 
-    double dLeft, lastdLeft, dRight, lastdRight, dist, lastDist, targetDist = 28;
+    double dLeft, lastdLeft, dRight, lastdRight, dist, lastDist, targetDist = 29;
 
     public static double kP = 0.004;
     public static double threshold = 10;
