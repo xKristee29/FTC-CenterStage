@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.testing.autos;
+package org.firstinspires.ftc.teamcode.testing.autos.back;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.Robot;
 import org.firstinspires.ftc.teamcode.drive.Utils;
 
 @Autonomous(group = "auto")
-public class RedFrontBackstage extends LinearOpMode {
+public class BlueBackPixel extends LinearOpMode {
 
     Robot robot;
     public void initialize(){
@@ -36,16 +36,37 @@ public class RedFrontBackstage extends LinearOpMode {
             robot.armController.startMeasuring();
             robot.drive.startAsyncLocalization();
 
-            // L path
+            // Se duce in fata tablei
             Path path1 = new Path(new Point(0,0))
-                    .goTo(new Point(0,140,90))
-                    .goTo(new Point(210,140,120));
+                    .goTo(new Point(-60,70,270));
 
             robot.driveController.run(path1);
 
             while(robot.driveController.isRunning()){
                 if(isStopRequested()) throw new InterruptedException();
             }
+
+            ///////////////////////////////
+
+            // Se pune langa tabla
+            while(Math.abs(robot.armController.getDistError()) > 3){
+                double error = 270 - robot.drive.theta;
+
+                error = Utils.minAbs(error, error - Math.signum(error) * 360);
+
+                telemetry.addData("Dist", robot.armController.getDist());
+                telemetry.addData("Err", robot.armController.getDistError());
+                telemetry.update();
+
+                robot.drive.setPower(
+                        0.3 * -Math.signum(robot.armController.getDistError()),
+                        -robot.driveController.getRotationalCorrection(error * 0.3)
+                );
+
+                if(isStopRequested()) throw new InterruptedException();
+            }
+            robot.drive.setPower(0,0);
+
 
             robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
 
@@ -73,14 +94,17 @@ public class RedFrontBackstage extends LinearOpMode {
                 if(isStopRequested()) throw new InterruptedException();
             }
 
-            Path path2 = new Path(new Point(0,0))
-                    .goTo(new Point(240,140,120));
+            // Ma parchez in stanga
+            Path path2 = new Path(path1.lastPoint)
+                    .goTo(new Point(-80,10,270))
+                    .goTo(new Point(-120,10));
 
             robot.driveController.run(path2);
 
-            while(robot.driveController.isRunning()) {
-                if (isStopRequested()) throw new InterruptedException();
+            while(robot.driveController.isRunning()){
+                if(isStopRequested()) throw new InterruptedException();
             }
+
 
             throw new InterruptedException();
         }
