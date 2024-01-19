@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.drive;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.testing.sanke.CenterStageCVDetection;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
@@ -25,107 +27,80 @@ public class OpenCVDetector extends OpenCvPipeline {
     Mat mat = new Mat();
 
     public enum Location {
-        LEFT,
-        RIGHT,
-        MIDDLE
+        LEFT("Left"),
+        RIGHT("Right"),
+        MIDDLE("Mid");
+
+        private final String str;
+        Location(String text){
+            str = text;
+        }
     }
 
     public Location location;
 
     // ROIs
-    //static final Rect Left_ROI = new Rect(10, 100, 105, 200);
-    static final Rect Right_ROI = new Rect(120, 100, 205, 200);
-    static final Rect Middle_ROI = new Rect(220, 100, 310, 200);
+    static final Rect Left_ROI = new Rect(new Point(35, 125), new Point(85, 175));
+    static final Rect Middle_ROI = new Rect(new Point(120, 100), new Point(205, 175));
+    static final Rect Right_ROI = new Rect(new Point(235, 125), new Point(285, 175));
 
     public OpenCVDetector(Telemetry t) {
         telemetry = t;
     }
 
+    double thresh = 0.5;
+
     @Override
     public Mat processFrame(Mat input) {
-        mat.release(); // Release the previous Mat to avoid memory leaks
-        mat = input.clone(); // Clone the input Mat
-        //Varianta fara Left_ROI
 
+        Mat hsv = new Mat();
+        Imgproc.cvtColor(input,hsv,Imgproc.COLOR_RGB2HSV);
 
-        /*
-        if (!DETECT_RED) {
-            //blue values
-            Core.inRange(mat, new Scalar(MINIMUM_BLUE_RED, MINIMUM_VALUES, MINIMUM_VALUES),
-                    new Scalar(MAXIMUM_BLUE_RED, MAXIMUM_VALUES, MAXIMUM_VALUES), mat);
-        } else {
-            // Red value
-            Core.inRange(mat, new Scalar(0, 0, 0), new Scalar(25, MAXIMUM_VALUES, MAXIMUM_VALUES), mat);
-        }
-         */
+        Scalar colMin = new Scalar(0,100,100);
+        Scalar colMax = new Scalar(255,255,255);
 
+        Core.inRange(hsv,colMin,colMax,hsv);
 
-        //ne uitam dupa ambele culori (needz to be tested)
-        //Core.inRange(mat, new Scalar(MINIMUM_BLUE_RED, MINIMUM_VALUES, MINIMUM_VALUES), new Scalar(MAXIMUM_BLUE_RED, MAXIMUM_VALUES, MAXIMUM_VALUES), mat);
-        Mat mat1 = mat.clone();
-        Mat mat2 = mat.clone();
-        Mat mat3 = mat.clone();
-        Mat mat4 = mat.clone();
-        Core.inRange(mat1, new Scalar(0, 0, MINIMUM_VALUES), new Scalar(50, 50, MAXIMUM_VALUES), mat1); // Blue range
-        Core.inRange(mat2, new Scalar(MINIMUM_VALUES, 0, 0), new Scalar(MAXIMUM_VALUES, 50, 50), mat2); // Red range
-        Core.bitwise_or(mat1,mat2, mat);
+        Mat rgb = new Mat();
+        Mat gray = new Mat();
 
-        Core.inRange(mat3, new Scalar(0,0,100), new Scalar(50,50,255),mat3); // blue line
-        Core.inRange(mat4, new Scalar(100,0,0), new Scalar(255,50,50),mat4); // red line
+        Imgproc.cvtColor(hsv,rgb,Imgproc.COLOR_HSV2RGB);
+        Imgproc.cvtColor(rgb,gray,Imgproc.COLOR_RGB2GRAY);
 
-        // Submatrices
-        //Mat left = mat.submat(Left_ROI);
-        Mat right = mat.submat(Right_ROI);
-        Mat middle = mat.submat(Middle_ROI);
+        Mat mid = gray.submat(Left_ROI);
+        Mat right = gray.submat(Right_ROI);
 
-        // Sum of pixels
-        //double leftValue = Core.sumElems(left).val[0];
-        double rightValue = Core.sumElems(right).val[0];
-        double middleValue = Core.sumElems(middle).val[0];
+        double midPer = Core.sumElems(mid).val[0] / Left_ROI.area() / 255;
+        double rightPer = Core.sumElems(right).val[0] / Right_ROI.area() / 255;
 
-        // Telemetrie
-        //telemetry.addData("Left Raw Value", leftValue);
-        telemetry.addData("Right Raw Data", rightValue);
-        telemetry.addData("Middle Raw Data", middleValue);
-
-        //left.release();
-        right.release();
-        middle.release();
-
-        // location
-        if (rightValue==0 && middleValue==0) {
-            location = Location.LEFT;
-        }
-        if (rightValue >= middleValue) {
-            location = Location.RIGHT;
-        } else {
+        if(midPer > thresh){
             location = Location.MIDDLE;
         }
-
-        switch (location) {
-            case LEFT:
-                telemetry.addData("Prop location", "Left");
-                break;
-            case MIDDLE:
-                telemetry.addData("Prop Location", "Middle");
-                break;
-            case RIGHT:
-                telemetry.addData("Prop location", "Right");
-                break;
+        else if(rightPer > thresh){
+            location = Location.RIGHT;
+        }
+        else{
+            location = Location.LEFT;
         }
 
-        // Update la telemetrie
+        telemetry.addData("Mid", midPer);
+        telemetry.addData("Right", rightPer);
+        telemetry.addLine();
+        telemetry.addData("Location", location.str);
         telemetry.update();
 
-        // Desenam rectangles pentru o vizualizare a prop-ului mai buna
-        Scalar pixelColor = DETECT_RED ? RED : BLUE;
-        Scalar propColor = new Scalar(0, 0, 255);
+        Imgproc.rectangle(rgb, Left_ROI, new Scalar(0,255,0));
+        Imgproc.rectangle(rgb, Right_ROI, new Scalar(0,255,0));
 
-        // Imgproc.rectangle(mat, Left_ROI, location == Location.Left ? pixelColor : propColor);
-        Imgproc.rectangle(mat, Middle_ROI, location == Location.MIDDLE ? pixelColor : propColor);
-        Imgproc.rectangle(mat, Right_ROI, location == Location.RIGHT ? pixelColor : propColor);
+        input = rgb.clone();
 
-        return mat;
+        rgb.release();
+        mid.release();
+        right.release();
+        gray.release();
+        hsv.release();
+
+        return input;
     }
 
 }
