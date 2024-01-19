@@ -146,7 +146,7 @@ public class ArmController {
     }
 
     public double getDistError(){
-        return targetDist - dRight;
+        return targetDist - dist;
     }
 
     public int getPosition(){

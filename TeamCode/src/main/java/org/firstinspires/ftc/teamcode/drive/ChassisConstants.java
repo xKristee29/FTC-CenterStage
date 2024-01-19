@@ -18,7 +18,7 @@ public class ChassisConstants {
 
     public static double targetRadius = 10.0;
 
-    public static PIDCoefficients DRIVE_PID = new PIDCoefficients(0.01, 0, 0.007);
+    public static PIDCoefficients DRIVE_PID = new PIDCoefficients(0.012, 0, 0.01);
 
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.008, 0, 0.1);
 

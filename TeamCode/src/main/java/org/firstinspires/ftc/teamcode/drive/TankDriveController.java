@@ -179,6 +179,7 @@ public class TankDriveController {
 
                         if(Math.abs(angleError) > 130){
                             distance = -distance;
+                            angleError = angleError - Math.signum(angleError) * 180;
                         }
 
                         telemetry.addData("x", robot.x);
@@ -209,7 +210,7 @@ public class TankDriveController {
                         double powerR = Math.tanh(-pidGyro.calculate(angleError));
                         double powerX = (1 - Math.abs(powerR)) * Math.tanh(-pidDrive.calculate(distance));
 
-                        if(Math.abs(powerX) < 0.2 && distance < ChassisConstants.toleranceXY) check = true;
+                        if(Math.abs(powerX) < 0.2 && Math.abs(powerR) < 0.2) check = true;
 
                         robot.setPowerRamp(powerX, powerR);
 
