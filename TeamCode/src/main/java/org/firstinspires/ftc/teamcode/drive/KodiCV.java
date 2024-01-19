@@ -16,7 +16,7 @@ public class KodiCV {
     private HardwareMap hardwareMap;
 
     private OpenCvCamera webcam = null;
-    public CenterStageCVDetection detector = null;
+    public OpenCVDetector detector = null;
     private int cameraMonitorViewId;
     private boolean isRunning = true;
 
@@ -27,7 +27,7 @@ public class KodiCV {
     }
 
     public void start(){
-        detector = new CenterStageCVDetection(telemetry);
+        detector = new OpenCVDetector(telemetry);
         cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         webcam.setPipeline(detector);
