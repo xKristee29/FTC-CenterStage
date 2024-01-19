@@ -23,7 +23,7 @@ public class BlueBackTask extends LinearOpMode {
         cv = new KodiCV(telemetry,hardwareMap);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.4,0.25);
     }
 
 

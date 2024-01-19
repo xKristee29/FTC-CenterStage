@@ -20,7 +20,7 @@ public class BlueBackPixel extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.4,0.25);
     }
 
     @Override
@@ -38,8 +38,8 @@ public class BlueBackPixel extends LinearOpMode {
 
             // Se duce in fata tablei
             Path path1 = new Path(new Point(0,0))
-                    .goTo(new Point(0,50))
-                    .goTo(new Point(-60,70,270));
+                    .goTo(new Point(0,67,270))
+                    .goTo(new Point(-60,67,270));
 
             robot.driveController.run(path1);
 
@@ -73,7 +73,7 @@ public class BlueBackPixel extends LinearOpMode {
 
             Thread.sleep(400);
 
-            robot.armController.setTarget(ArmController.Position.LEVEL1);
+            robot.armController.setTarget(ArmController.Position.AUTOPIXEL);
 
             while(!robot.armController.isPositioned()){
                 if(isStopRequested()) throw new InterruptedException();
@@ -85,9 +85,9 @@ public class BlueBackPixel extends LinearOpMode {
 
 
 
-            robot.armController.setIntakePosition(ArmController.IntakePosition.THROW);
+            robot.armController.setIntakePosition(ArmController.IntakePosition.MID);
 
-            Thread.sleep(700);
+            Thread.sleep(1000);
 
             robot.armController.setTarget(ArmController.Position.HOME);
 
@@ -98,8 +98,8 @@ public class BlueBackPixel extends LinearOpMode {
             // Ma parchez in stanga
             Path path2 = new Path(path1.lastPoint)
                     .goTo(new Point(-30,60,200))
-                    .goTo(new Point(-80,10,270))
-                    .goTo(new Point(-120,10));
+                    .goTo(new Point(-80,5,270))
+                    .goTo(new Point(-130,5));
 
             robot.driveController.run(path2);
 

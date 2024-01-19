@@ -23,7 +23,7 @@ public class BlueFrontPixelTask extends LinearOpMode {
         cv = new KodiCV(telemetry,hardwareMap);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.4,0.25);
     }
 
 
@@ -74,7 +74,7 @@ public class BlueFrontPixelTask extends LinearOpMode {
                         if(isStopRequested()) throw new InterruptedException();
                     }
 
-                    Path pathLeft2 = new Path(pathLeft.lastPoint)
+                   Path pathLeft2 = new Path(pathLeft.lastPoint)
                             .goTo(new Point(0,70,0))
                             .goTo(new Point(0,130,270))
                             .goTo(new Point(-63,130,270));

@@ -25,7 +25,7 @@ public class ArmController {
     public static double kP = 0.004;
     public static double threshold = 10;
 
-    public static double speedFactor = 0.2;
+    public static double speedFactor = 0.1;
 
     boolean killController;
 
@@ -35,7 +35,7 @@ public class ArmController {
         LEVEL2(3100),
         HANG(2100),
         LEVEL3(2800),
-        AUTOPIXEL(3100);
+        AUTOPIXEL(3500);
         public final int val;
         Position(int val){
             this.val = val;

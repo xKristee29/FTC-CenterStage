@@ -20,7 +20,7 @@ public class ChassisConstants {
 
     public static PIDCoefficients DRIVE_PID = new PIDCoefficients(0.01, 0, 0);
 
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.008, 0, 0.01);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.008, 0.06, 0.01);
 
 
 }

@@ -22,7 +22,7 @@ public class TankDriveController {
     public TankDriveController(TankDriveChassis robot, Telemetry telemetry){
         this.robot = robot;
         this.telemetry = telemetry;
-        pidGyro.setTolerance(3,0.2);
+        pidGyro.setTolerance(5,1);
     }
 
     public Thread runThread = null;
@@ -229,9 +229,16 @@ public class TankDriveController {
 
                         double powerR = Math.tanh(-pidGyro.calculate(error));
 
-                        if(pidGyro.atSetPoint()) targetPoint.theta = Double.NaN;
+                        if(Math.abs(powerR) < 0.1 && pidGyro.getVelocityError() == 0) targetPoint.theta = Double.NaN;
 
                         robot.setPowerRamp(0, powerR);
+
+                        telemetry.addData("Err",error);
+                        telemetry.addData("Slope",pidGyro.getVelocityError());
+                        telemetry.addData("Period",pidGyro.getPeriod());
+                        telemetry.addData("Pwr",powerR);
+                        telemetry.update();
+
                     }
                 }
             }

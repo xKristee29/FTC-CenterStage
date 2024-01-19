@@ -20,7 +20,7 @@ public class BlueFrontBackstage extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.5);
+        robot.drive.setLimits(0.4,0.25);
     }
 
     @Override
