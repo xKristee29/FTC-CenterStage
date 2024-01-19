@@ -142,7 +142,7 @@ public class TankDriveController {
 
         public MotionPlayer(Path path){
             this.path = path;
-            pidDrive.setTolerance(0.05,0.1);
+            pidDrive.setTolerance(3,0.1);
             killController = false;
         }
 
