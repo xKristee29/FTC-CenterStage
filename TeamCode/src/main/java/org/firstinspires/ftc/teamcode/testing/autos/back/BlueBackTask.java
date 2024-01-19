@@ -68,7 +68,7 @@ public class BlueBackTask extends LinearOpMode {
                 case MIDDLE:
                     pathRandom = new Path(path1.lastPoint)
                             .goTo(new Point(0,70,0))
-                            .goTo(new Point(0,120,0));
+                            .goTo(new Point(0,110,0));
                     break;
             }
 
@@ -76,6 +76,8 @@ public class BlueBackTask extends LinearOpMode {
             while(robot.driveController.isRunning()){
                 if(isStopRequested()) throw new InterruptedException();
             }
+
+            robot.drive.setPower(0,0);
 
             robot.armController.dropPixel();
 
@@ -88,6 +90,7 @@ public class BlueBackTask extends LinearOpMode {
                     break;
                 case MIDDLE:
                     pathRandom = new Path(pathRandom.lastPoint)
+                            .goTo(new Point(-40,110))
                             .goTo(new Point(-60,67,270));
                     break;
                 case RIGHT:

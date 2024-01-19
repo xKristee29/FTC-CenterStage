@@ -177,7 +177,7 @@ public class TankDriveController {
 
                         angleError = Utils.minAbs(angleError, angleError - Math.signum(angleError) * 360);
 
-                        if(Math.abs(angleError) > 130){
+                        if(Math.abs(angleError) > 100){
                             distance = -distance;
                             angleError = angleError - Math.signum(angleError) * 180;
                         }
@@ -210,7 +210,7 @@ public class TankDriveController {
                         double powerR = Math.tanh(-pidGyro.calculate(angleError));
                         double powerX = (1 - Math.abs(powerR)) * Math.tanh(-pidDrive.calculate(distance));
 
-                        if(Math.abs(powerX) < 0.2 && Math.abs(powerR) < 0.2) check = true;
+                        if(Math.abs(pidDrive.getVelocityError()) < 0.2 && Math.abs(pidGyro.getVelocityError()) < 0.2) check = true;
 
                         robot.setPowerRamp(powerX, powerR);
 
@@ -226,7 +226,7 @@ public class TankDriveController {
 
                         double powerR = Math.tanh(-pidGyro.calculate(error));
 
-                        if(Math.abs(powerR) < 0.2) targetPoint.theta = Double.NaN;
+                        if(Math.abs(pidGyro.getVelocityError()) < 0.2) targetPoint.theta = Double.NaN;
 
                         robot.setPowerRamp(0, powerR);
                     }
