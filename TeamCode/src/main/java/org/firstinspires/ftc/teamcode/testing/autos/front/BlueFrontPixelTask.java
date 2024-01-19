@@ -58,13 +58,13 @@ public class BlueFrontPixelTask extends LinearOpMode {
                 case LEFT:
                     Path pathLeft = new Path(path1.lastPoint)
                             .goTo(new Point(0,70,270))
-                            .goTo(new Point(-70,70,270));
+                            .goTo(new Point(-60,70,270));
 
                     robot.driveController.run(pathLeft);
 
-//                    while(robot.driveController.isRunning()){
-  //                      if(isStopRequested()) throw new InterruptedException();
-    //                }
+                    while(robot.driveController.isRunning()){
+                        if(isStopRequested()) throw new InterruptedException();
+                   }
 
                     robot.armController.dropPixel();
 
@@ -75,8 +75,9 @@ public class BlueFrontPixelTask extends LinearOpMode {
                     }
 
                     Path pathLeft2 = new Path(pathLeft.lastPoint)
-                            .goTo(new Point(-70,70,0))
-                            .goTo(new Point(-70,130,270));
+                            .goTo(new Point(0,70,0))
+                            .goTo(new Point(0,130,270))
+                            .goTo(new Point(-63,130,270));
 
                     robot.driveController.run(pathLeft2);
 
@@ -87,7 +88,7 @@ public class BlueFrontPixelTask extends LinearOpMode {
                     break;
                 case MIDDLE:
                     Path pathMiddle = new Path(path1.lastPoint)
-                            .goTo(new Point(0,120));
+                            .goTo(new Point(0,110));
 
                     robot.driveController.run(pathMiddle);
 
@@ -105,7 +106,7 @@ public class BlueFrontPixelTask extends LinearOpMode {
 
                     Path pathMiddle2 = new Path(pathMiddle.lastPoint)
                             .goTo(new Point(0,140,270))
-                            .goTo(new Point(-65,140,270));
+                            .goTo(new Point(-60,140,270));
 
                     robot.driveController.run(pathMiddle2);
 
@@ -120,8 +121,8 @@ public class BlueFrontPixelTask extends LinearOpMode {
                     break;
                 case RIGHT:
                     Path pathRight = new Path(path1.lastPoint)
-                            .goTo(new Point(0,70,180))
-                            .goTo(new Point(33,70,180));
+                            .goTo(new Point(0,70,90))
+                            .goTo(new Point(33,70,90));
 
                     robot.driveController.run(pathRight);
 
@@ -138,7 +139,7 @@ public class BlueFrontPixelTask extends LinearOpMode {
                     }
 
                     Path pathRight2 = new Path(pathRight.lastPoint)
-                            .goTo(new Point(33,70,45))
+                            .goTo(new Point(33,70,325))
                             .goTo(new Point(-30,140,270))
                             .goTo(new Point(-65,140,270));
 

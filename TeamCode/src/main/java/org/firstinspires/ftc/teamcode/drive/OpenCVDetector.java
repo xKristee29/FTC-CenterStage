@@ -61,14 +61,8 @@ public class OpenCVDetector extends OpenCvPipeline {
 
         Core.inRange(hsv,colMin,colMax,hsv);
 
-        Mat rgb = new Mat();
-        Mat gray = new Mat();
-
-        Imgproc.cvtColor(hsv,rgb,Imgproc.COLOR_HSV2RGB);
-        Imgproc.cvtColor(rgb,gray,Imgproc.COLOR_RGB2GRAY);
-
-        Mat mid = gray.submat(Left_ROI);
-        Mat right = gray.submat(Right_ROI);
+        Mat mid = hsv.submat(Left_ROI);
+        Mat right = hsv.submat(Right_ROI);
 
         double midPer = Core.sumElems(mid).val[0] / Left_ROI.area() / 255;
         double rightPer = Core.sumElems(right).val[0] / Right_ROI.area() / 255;
@@ -89,15 +83,11 @@ public class OpenCVDetector extends OpenCvPipeline {
         telemetry.addData("Location", location.str);
         telemetry.update();
 
-        Imgproc.rectangle(rgb, Left_ROI, new Scalar(0,255,0));
-        Imgproc.rectangle(rgb, Right_ROI, new Scalar(0,255,0));
+        Imgproc.rectangle(input, Left_ROI, new Scalar(0,255,0));
+        Imgproc.rectangle(input, Right_ROI, new Scalar(0,255,0));
 
-        input = rgb.clone();
-
-        rgb.release();
         mid.release();
         right.release();
-        gray.release();
         hsv.release();
 
         return input;
