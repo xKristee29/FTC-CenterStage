@@ -20,7 +20,7 @@ public class BlueBackPixel extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.2);
+        robot.drive.setLimits(0.5,0.3);
     }
 
     @Override
@@ -38,6 +38,7 @@ public class BlueBackPixel extends LinearOpMode {
 
             // Se duce in fata tablei
             Path path1 = new Path(new Point(0,0))
+                    .goTo(new Point(0,50))
                     .goTo(new Point(-60,70,270));
 
             robot.driveController.run(path1);
@@ -96,6 +97,7 @@ public class BlueBackPixel extends LinearOpMode {
 
             // Ma parchez in stanga
             Path path2 = new Path(path1.lastPoint)
+                    .goTo(new Point(-30,60,200))
                     .goTo(new Point(-80,10,270))
                     .goTo(new Point(-120,10));
 
