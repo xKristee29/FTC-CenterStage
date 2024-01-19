@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.testing.sanke.CenterStageCVDetection;
 
 
 @Autonomous(group = "auto")
-public class BlueFrontPixelTask extends LinearOpMode {
+public class RedFrontPixelTask extends LinearOpMode {
 
     KodiCV cv;
     Robot robot;
@@ -57,26 +57,27 @@ public class BlueFrontPixelTask extends LinearOpMode {
             switch(cv.detector.location){
                 case LEFT:
                     Path pathLeft = new Path(path1.lastPoint)
-                            .goTo(new Point(0,70,270))
-                            .goTo(new Point(-70,70,270));
+                            .goTo(new Point(0,70,180))
+                            .goTo(new Point(33,70,180));
 
                     robot.driveController.run(pathLeft);
 
-//                    while(robot.driveController.isRunning()){
-  //                      if(isStopRequested()) throw new InterruptedException();
-    //                }
+                    while(robot.driveController.isRunning()){
+                        if(isStopRequested()) throw new InterruptedException();
+                    }
 
                     robot.armController.dropPixel();
 
                     Thread.sleep(2000);
 
-                   while(robot.driveController.isRunning()){
+                    while(robot.driveController.isRunning()){
                         if(isStopRequested()) throw new InterruptedException();
                     }
 
                     Path pathLeft2 = new Path(pathLeft.lastPoint)
-                            .goTo(new Point(-70,70,0))
-                            .goTo(new Point(-70,130,270));
+                            .goTo(new Point(33,70,45))
+                            .goTo(new Point(-30,140,270))
+                            .goTo(new Point(-65,140,270));
 
                     robot.driveController.run(pathLeft2);
 
@@ -85,6 +86,7 @@ public class BlueFrontPixelTask extends LinearOpMode {
                     }
                     //finished
                     break;
+
                 case MIDDLE:
                     Path pathMiddle = new Path(path1.lastPoint)
                             .goTo(new Point(0,120));
@@ -104,8 +106,8 @@ public class BlueFrontPixelTask extends LinearOpMode {
                     }
 
                     Path pathMiddle2 = new Path(pathMiddle.lastPoint)
-                            .goTo(new Point(0,140,270))
-                            .goTo(new Point(-65,140,270));
+                            .goTo(new Point(0,140,90))
+                            .goTo(new Point(65,140,90));
 
                     robot.driveController.run(pathMiddle2);
 
@@ -114,14 +116,13 @@ public class BlueFrontPixelTask extends LinearOpMode {
                     }
 
                     //ne punem in fata tablei in functie de randomizare -> punem pixel -> ne parcam
-
                     //finished
-
                     break;
+
                 case RIGHT:
                     Path pathRight = new Path(path1.lastPoint)
-                            .goTo(new Point(0,70,180))
-                            .goTo(new Point(33,70,180));
+                            .goTo(new Point(0,70,270))
+                            .goTo(new Point(63,70,270));
 
                     robot.driveController.run(pathRight);
 
@@ -138,9 +139,8 @@ public class BlueFrontPixelTask extends LinearOpMode {
                     }
 
                     Path pathRight2 = new Path(pathRight.lastPoint)
-                            .goTo(new Point(33,70,45))
-                            .goTo(new Point(-30,140,270))
-                            .goTo(new Point(-65,140,270));
+                            .goTo(new Point(63,70,90))
+                            .goTo(new Point(63,140,270));
 
                     robot.driveController.run(pathRight2);
 
