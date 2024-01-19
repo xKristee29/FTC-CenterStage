@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.Point;
 import org.firstinspires.ftc.teamcode.drive.Robot;
 import org.firstinspires.ftc.teamcode.drive.Utils;
 
-@Autonomous(group = "auto")
+@Autonomous(group = "auto-finished")
 public class BlueBackPixel extends LinearOpMode {
 
     Robot robot;

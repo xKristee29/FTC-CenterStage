@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.Point;
 import org.firstinspires.ftc.teamcode.drive.Robot;
 import org.firstinspires.ftc.teamcode.drive.Utils;
 
-@Autonomous(group = "auto")
+@Autonomous(group = "auto-finished")
 public class RedFrontPixel extends LinearOpMode {
 
     Robot robot;
@@ -20,7 +20,7 @@ public class RedFrontPixel extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.2);
+        robot.drive.setLimits(0.4,0.25);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class RedFrontPixel extends LinearOpMode {
             }
 
             Path path2 = new Path(path1.lastPoint)
-                    .goTo(new Point(210,80,90));
+                    .goTo(new Point(210,67,90));
 
             robot.driveController.run(path2);
 
@@ -57,7 +57,7 @@ public class RedFrontPixel extends LinearOpMode {
             }
 
             // Se pune langa tabla
-            while(Math.abs(robot.armController.getDistError()) > 2){
+            while(Math.abs(robot.armController.getDistError()) > 3){
                 double error = 90 - robot.drive.theta;
 
                 error = Utils.minAbs(error, error - Math.signum(error) * 360);
@@ -79,7 +79,7 @@ public class RedFrontPixel extends LinearOpMode {
 
             Thread.sleep(400);
 
-            robot.armController.setTarget(ArmController.Position.LEVEL1);
+            robot.armController.setTarget(ArmController.Position.AUTOPIXEL);
 
             while(!robot.armController.isPositioned()){
                 if(isStopRequested()) throw new InterruptedException();
@@ -91,9 +91,9 @@ public class RedFrontPixel extends LinearOpMode {
 
 
 
-            robot.armController.setIntakePosition(ArmController.IntakePosition.THROW);
+            robot.armController.setIntakePosition(ArmController.IntakePosition.MID);
 
-            Thread.sleep(700);
+            Thread.sleep(1000);
 
             robot.armController.setTarget(ArmController.Position.HOME);
 

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.Point;
 import org.firstinspires.ftc.teamcode.drive.Robot;
 import org.firstinspires.ftc.teamcode.drive.Utils;
 
-@Autonomous(group = "auto")
+@Autonomous(group = "auto-finished")
 public class RedBackPixel extends LinearOpMode {
 
     Robot robot;
@@ -39,7 +39,8 @@ public class RedBackPixel extends LinearOpMode {
 
             // Se duce in fata tablei
             Path path1 = new Path(new Point(0,0))
-                    .goTo(new Point(60,70,90));
+                    .goTo(new Point(0,67,90))
+                    .goTo(new Point(60,67,90));
 
             robot.driveController.run(path1);
 
@@ -73,7 +74,7 @@ public class RedBackPixel extends LinearOpMode {
 
             Thread.sleep(400);
 
-            robot.armController.setTarget(ArmController.Position.LEVEL1);
+            robot.armController.setTarget(ArmController.Position.AUTOPIXEL);
 
             while(!robot.armController.isPositioned()){
                 if(isStopRequested()) throw new InterruptedException();
@@ -85,9 +86,9 @@ public class RedBackPixel extends LinearOpMode {
 
 
 
-            robot.armController.setIntakePosition(ArmController.IntakePosition.THROW);
+            robot.armController.setIntakePosition(ArmController.IntakePosition.MID);
 
-            Thread.sleep(700);
+            Thread.sleep(1000);
 
             robot.armController.setTarget(ArmController.Position.HOME);
 
@@ -97,8 +98,9 @@ public class RedBackPixel extends LinearOpMode {
 
             // Ma parchez in stanga
             Path path2 = new Path(path1.lastPoint)
-                    .goTo(new Point(80,10,90))
-                    .goTo(new Point(120,10));
+                    .goTo(new Point(30,60,160))
+                    .goTo(new Point(80,5,90))
+                    .goTo(new Point(130,5));
 
             robot.driveController.run(path2);
 

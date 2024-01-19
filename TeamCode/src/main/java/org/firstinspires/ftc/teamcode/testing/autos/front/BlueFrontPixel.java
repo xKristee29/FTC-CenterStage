@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.Point;
 import org.firstinspires.ftc.teamcode.drive.Robot;
 import org.firstinspires.ftc.teamcode.drive.Utils;
 
-@Autonomous(group = "auto")
+@Autonomous(group = "auto-finished")
 public class BlueFrontPixel extends LinearOpMode {
 
     Robot robot;
@@ -51,7 +51,7 @@ public class BlueFrontPixel extends LinearOpMode {
             // Thread.sleep(1000);
 
             Path path2 = new Path(path1.lastPoint)
-                    .goTo(new Point(-210,65,270));
+                    .goTo(new Point(-210,67,270));
 
             robot.driveController.run(path2);
 
@@ -82,7 +82,7 @@ public class BlueFrontPixel extends LinearOpMode {
 
             Thread.sleep(400);
 
-            robot.armController.setTarget(ArmController.Position.LEVEL1);
+            robot.armController.setTarget(ArmController.Position.AUTOPIXEL);
 
             while(!robot.armController.isPositioned()){
                 if(isStopRequested()) throw new InterruptedException();
@@ -93,9 +93,9 @@ public class BlueFrontPixel extends LinearOpMode {
             /////////////////////////////
 
 
-            robot.armController.setIntakePosition(ArmController.IntakePosition.THROW);
+            robot.armController.setIntakePosition(ArmController.IntakePosition.MID);
 
-            Thread.sleep(700);
+            Thread.sleep(1000);
 
             robot.armController.setTarget(ArmController.Position.HOME);
 
