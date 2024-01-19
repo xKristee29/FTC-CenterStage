@@ -22,7 +22,7 @@ public class TankDriveController {
     public TankDriveController(TankDriveChassis robot, Telemetry telemetry){
         this.robot = robot;
         this.telemetry = telemetry;
-        pidGyro.setTolerance(1);
+        pidGyro.setTolerance(3,0.2);
     }
 
     public Thread runThread = null;
@@ -210,12 +210,15 @@ public class TankDriveController {
                         double powerR = Math.tanh(-pidGyro.calculate(angleError));
                         double powerX = (1 - Math.abs(powerR)) * Math.tanh(-pidDrive.calculate(distance));
 
-                        if(Math.abs(pidDrive.getVelocityError()) < 0.2 && Math.abs(pidGyro.getVelocityError()) < 0.2) check = true;
+                        if(Math.abs(powerR) < 0.2 && Math.abs(powerX) < 0.2) check = true;
 
                         robot.setPowerRamp(powerX, powerR);
 
                         telemetry.addData("pwrX", powerX);
                         telemetry.addData("pwrR", powerR);
+                        telemetry.addLine();
+                        telemetry.addData("dX",Math.abs(pidDrive.getVelocityError()));
+                        telemetry.addData("dR",Math.abs(pidGyro.getVelocityError()));
                         telemetry.update();
                     }
 
@@ -226,7 +229,7 @@ public class TankDriveController {
 
                         double powerR = Math.tanh(-pidGyro.calculate(error));
 
-                        if(Math.abs(pidGyro.getVelocityError()) < 0.2) targetPoint.theta = Double.NaN;
+                        if(pidGyro.atSetPoint()) targetPoint.theta = Double.NaN;
 
                         robot.setPowerRamp(0, powerR);
                     }
@@ -235,7 +238,4 @@ public class TankDriveController {
         }
 
     }
-
-
-
 }

@@ -115,7 +115,7 @@ public class BlueBackTask extends LinearOpMode {
 
                 robot.drive.setPower(
                         0.3 * -Math.signum(robot.armController.getDistError()),
-                        0.1 * -Math.signum(robot.driveController.getRotationalCorrection(error))
+                        0.3 * -Math.signum(robot.driveController.getRotationalCorrection(error))
                 );
 
                 if(isStopRequested()) throw new InterruptedException();
