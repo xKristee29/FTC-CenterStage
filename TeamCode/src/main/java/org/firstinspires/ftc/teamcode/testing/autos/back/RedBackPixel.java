@@ -20,7 +20,7 @@ public class RedBackPixel extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.4,0.25);
+        robot.drive.setLimits(0.4,0.2);
     }
 
 
@@ -99,8 +99,8 @@ public class RedBackPixel extends LinearOpMode {
             // Ma parchez in stanga
             Path path2 = new Path(path1.lastPoint)
                     .goTo(new Point(30,60,160))
-                    .goTo(new Point(80,5,90))
-                    .goTo(new Point(130,5));
+                    .goTo(new Point(80,0,90))
+                    .goTo(new Point(130,0));
 
             robot.driveController.run(path2);
 

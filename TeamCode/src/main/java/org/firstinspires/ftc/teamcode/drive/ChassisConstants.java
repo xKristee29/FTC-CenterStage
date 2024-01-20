@@ -13,14 +13,14 @@ public class ChassisConstants {
 
     public static double alphaEncoder = 0.0025;
 
-    public static double toleranceXY = 10.0;
+    public static double toleranceXY = 4.0;
     public static double toleranceR = 10.0;
 
     public static double targetRadius = 10.0;
 
     public static PIDCoefficients DRIVE_PID = new PIDCoefficients(0.01, 0, 0);
 
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.008, 0.06, 0.01);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0.008, 0.005, 0.01);
 
 
 }

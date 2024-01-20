@@ -20,7 +20,7 @@ public class RedFrontPixel extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.4,0.25);
+        robot.drive.setLimits(0.4,0.2);
     }
 
     @Override
@@ -35,6 +35,8 @@ public class RedFrontPixel extends LinearOpMode {
             robot.armController.startPositioning();
             robot.armController.startMeasuring();
             robot.drive.startAsyncLocalization();
+
+            Thread.sleep(12000);
 
             // L path
             Path path1 = new Path(new Point(0,0))

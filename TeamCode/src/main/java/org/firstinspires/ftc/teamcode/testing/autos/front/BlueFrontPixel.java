@@ -20,7 +20,7 @@ public class BlueFrontPixel extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.4,0.25);
+        robot.drive.setLimits(0.4,0.2);
     }
 
     @Override
@@ -36,6 +36,10 @@ public class BlueFrontPixel extends LinearOpMode {
             robot.armController.startMeasuring();
             robot.drive.startAsyncLocalization();
 
+            Thread.sleep(12000);
+
+            //daca pleaca bratul din control in sus devine inutilizabil
+
             // L path
             Path path1 = new Path(new Point(0,0))
                     .goTo(new Point(0,140,270))
@@ -48,7 +52,6 @@ public class BlueFrontPixel extends LinearOpMode {
                 if(isStopRequested()) throw new InterruptedException();
             }
 
-            // Thread.sleep(1000);
 
             Path path2 = new Path(path1.lastPoint)
                     .goTo(new Point(-210,67,270));

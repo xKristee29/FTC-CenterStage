@@ -229,7 +229,7 @@ public class TankDriveController {
 
                         double powerR = Math.tanh(-pidGyro.calculate(error));
 
-                        if(Math.abs(powerR) < 0.1 && pidGyro.getVelocityError() == 0) targetPoint.theta = Double.NaN;
+                        if(Math.abs(powerR) < 0.2 && pidGyro.getVelocityError() == 0) targetPoint.theta = Double.NaN;
 
                         robot.setPowerRamp(0, powerR);
 

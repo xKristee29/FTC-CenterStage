@@ -5,10 +5,12 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.drive.ArmController;
 import org.firstinspires.ftc.teamcode.drive.KodiCV;
 import org.firstinspires.ftc.teamcode.drive.Path;
 import org.firstinspires.ftc.teamcode.drive.Point;
 import org.firstinspires.ftc.teamcode.drive.Robot;
+import org.firstinspires.ftc.teamcode.drive.Utils;
 import org.firstinspires.ftc.teamcode.testing.sanke.CenterStageCVDetection;
 
 
@@ -23,7 +25,7 @@ public class BlueFrontPixelTask extends LinearOpMode {
         cv = new KodiCV(telemetry,hardwareMap);
 
         robot.init();
-        robot.drive.setLimits(0.4,0.25);
+        robot.drive.setLimits(0.4,0.2);
     }
 
 
@@ -77,13 +79,21 @@ public class BlueFrontPixelTask extends LinearOpMode {
                    Path pathLeft2 = new Path(pathLeft.lastPoint)
                             .goTo(new Point(0,70,0))
                             .goTo(new Point(0,130,270))
-                            .goTo(new Point(-63,130,270));
+                            .goTo(new Point(-80,130,235));
 
                     robot.driveController.run(pathLeft2);
 
                     while(robot.driveController.isRunning()){
                         if(isStopRequested()) throw new InterruptedException();
                     }
+
+                    Thread.sleep(1000);
+
+                    Path pathLeft3 = new Path(pathLeft2.lastPoint)
+                            .goTo(new Point(-180,65,270));
+
+                    robot.driveController.run(pathLeft3);
+
                     //finished
                     break;
                 case MIDDLE:
@@ -114,7 +124,6 @@ public class BlueFrontPixelTask extends LinearOpMode {
                         if(isStopRequested()) throw new InterruptedException();
                     }
 
-                    //ne punem in fata tablei in functie de randomizare -> punem pixel -> ne parcam
 
                     //finished
 
@@ -150,6 +159,66 @@ public class BlueFrontPixelTask extends LinearOpMode {
                     }
                     //finished
                     break;
+            }
+
+            while(robot.driveController.isRunning()){
+                if(isStopRequested()) throw new InterruptedException();
+            }
+
+            while(Math.abs(robot.armController.getDistError()) > 3){
+                double error = 270 - robot.drive.theta;
+
+                error = Utils.minAbs(error, error - Math.signum(error) * 360);
+
+                telemetry.addData("Dist", robot.armController.getDist());
+                telemetry.addData("Err", robot.armController.getDistError());
+                telemetry.update();
+
+                robot.drive.setPower(
+                        0.3 * -Math.signum(robot.armController.getDistError()),
+                        0.3 * -Math.signum(robot.driveController.getRotationalCorrection(error))
+                );
+
+                if(isStopRequested()) throw new InterruptedException();
+            }
+            robot.drive.setPower(0,0);
+
+            robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
+
+            Thread.sleep(200);
+
+            robot.armController.setTarget(ArmController.Position.AUTOPIXEL);
+
+            while(!robot.armController.isPositioned()){
+                if(isStopRequested()) throw new InterruptedException();
+            }
+
+            Thread.sleep(700);
+
+            /////////////////////////////
+
+
+            robot.armController.setIntakePosition(ArmController.IntakePosition.MID);
+
+            Thread.sleep(1000);
+
+            robot.armController.setTarget(ArmController.Position.HOME);
+
+            while(!robot.armController.isPositioned()){
+                if(isStopRequested()) throw new InterruptedException();
+            }
+
+
+            // Ma parchez in stanga
+            Path path2 = new Path(path1.lastPoint)
+                    .goTo(new Point(-180,60,200))
+                    .goTo(new Point(-200,0,270))
+                    .goTo(new Point(-210,0));
+
+            robot.driveController.run(path2);
+
+            while(robot.driveController.isRunning()){
+                if(isStopRequested()) throw new InterruptedException();
             }
 
             throw new InterruptedException();
