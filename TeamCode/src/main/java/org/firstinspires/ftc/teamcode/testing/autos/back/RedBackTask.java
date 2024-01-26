@@ -24,9 +24,28 @@ public class RedBackTask extends LinearOpMode {
         cv = new KodiCV(telemetry,hardwareMap);
 
         robot.init();
-        robot.drive.setLimits(0.4,0.2);
+        robot.drive.setLimits(0.4,0.25);
     }
 
+    public void positionToBackdrop(double angle){
+        while(Math.abs(robot.armController.getDistError()) > 3){
+            double error = angle - robot.drive.theta;
+
+            error = Utils.minAbs(error, error - Math.signum(error) * 360);
+
+            telemetry.addData("Dist", robot.armController.getDist());
+            telemetry.addData("Err", robot.armController.getDistError());
+            telemetry.update();
+
+            robot.drive.setPower(
+                    0.3 * -Math.tanh(robot.armController.getDistError()),
+                    0.08 * Math.tanh(error)
+            );
+
+            if(isStopRequested()) break;
+        }
+        robot.drive.setPower(0,0);
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -101,29 +120,13 @@ public class RedBackTask extends LinearOpMode {
                             .goTo(new Point(70,52,270));
                     break;
             }
-            //finished: LeftRedBack,MidRedBack,
+
             robot.driveController.run(pathRandom);
             while(robot.driveController.isRunning()){
                 if(isStopRequested()) throw new InterruptedException();
             }
 
-            while(Math.abs(robot.armController.getDistError()) > 3){
-                double error = 90 - robot.drive.theta;
-
-                error = Utils.minAbs(error, error - Math.signum(error) * 360);
-
-                telemetry.addData("Dist", robot.armController.getDist());
-                telemetry.addData("Err", robot.armController.getDistError());
-                telemetry.update();
-
-                robot.drive.setPower(
-                        0.3 * -Math.signum(robot.armController.getDistError()),
-                        0.3 * -Math.signum(robot.driveController.getRotationalCorrection(error))
-                );
-
-                if(isStopRequested()) throw new InterruptedException();
-            }
-            robot.drive.setPower(0,0);
+            positionToBackdrop(90);
 
             robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
 

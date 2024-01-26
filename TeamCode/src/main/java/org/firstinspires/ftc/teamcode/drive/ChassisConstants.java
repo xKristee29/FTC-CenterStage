@@ -12,7 +12,7 @@ public class ChassisConstants {
     public static double WHEEL_DIAM = 9.0; // cm
     public static double TRACK_WIDTH = 31.0; // cm
 
-    public static double LIMIT_MS = 150;
+    public static double LIMIT_MS = 300;
 
     public static double alphaEncoder = 0.0025;
 

@@ -35,7 +35,7 @@ public class BlueBackPixel extends LinearOpMode {
 
             robot.drive.setPower(
                     0.3 * -Math.tanh(robot.armController.getDistError()),
-                    0.3 * -Math.tanh(error)
+                    0.08 * Math.tanh(error)
             );
 
             if(isStopRequested()) break;

@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.drive.KodiCV;
 import org.firstinspires.ftc.teamcode.drive.Path;
 import org.firstinspires.ftc.teamcode.drive.Point;
 import org.firstinspires.ftc.teamcode.drive.Robot;
+import org.firstinspires.ftc.teamcode.drive.Utils;
 import org.firstinspires.ftc.teamcode.testing.sanke.CenterStageCVDetection;
 
 
@@ -23,9 +24,27 @@ public class RedFrontPixelTask extends LinearOpMode {
         cv = new KodiCV(telemetry,hardwareMap);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.4,0.25);
     }
+    public void positionToBackdrop(double angle){
+        while(Math.abs(robot.armController.getDistError()) > 3){
+            double error = angle - robot.drive.theta;
 
+            error = Utils.minAbs(error, error - Math.signum(error) * 360);
+
+            telemetry.addData("Dist", robot.armController.getDist());
+            telemetry.addData("Err", robot.armController.getDistError());
+            telemetry.update();
+
+            robot.drive.setPower(
+                    0.3 * -Math.tanh(robot.armController.getDistError()),
+                    0.08 * Math.tanh(error)
+            );
+
+            if(isStopRequested()) break;
+        }
+        robot.drive.setPower(0,0);
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -115,7 +134,6 @@ public class RedFrontPixelTask extends LinearOpMode {
                         if(isStopRequested()) throw new InterruptedException();
                     }
 
-                    //ne punem in fata tablei in functie de randomizare -> punem pixel -> ne parcam
                     //finished
                     break;
 

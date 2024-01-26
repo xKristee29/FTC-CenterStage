@@ -35,7 +35,7 @@ public class AutoBoilerplate extends LinearOpMode {
 
             robot.drive.setPower(
                     0.3 * -Math.tanh(robot.armController.getDistError()),
-                    0
+                    0.08 * Math.tanh(error)
             );
 
             if(isStopRequested()) break;

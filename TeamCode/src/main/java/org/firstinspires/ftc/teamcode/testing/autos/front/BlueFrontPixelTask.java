@@ -25,7 +25,26 @@ public class BlueFrontPixelTask extends LinearOpMode {
         cv = new KodiCV(telemetry,hardwareMap);
 
         robot.init();
-        robot.drive.setLimits(0.4,0.2);
+        robot.drive.setLimits(0.4,0.25);
+    }
+    public void positionToBackdrop(double angle){
+        while(Math.abs(robot.armController.getDistError()) > 3){
+            double error = angle - robot.drive.theta;
+
+            error = Utils.minAbs(error, error - Math.signum(error) * 360);
+
+            telemetry.addData("Dist", robot.armController.getDist());
+            telemetry.addData("Err", robot.armController.getDistError());
+            telemetry.update();
+
+            robot.drive.setPower(
+                    0.3 * -Math.tanh(robot.armController.getDistError()),
+                    0.08 * Math.tanh(error)
+            );
+
+            if(isStopRequested()) break;
+        }
+        robot.drive.setPower(0,0);
     }
 
 
@@ -165,23 +184,7 @@ public class BlueFrontPixelTask extends LinearOpMode {
                 if(isStopRequested()) throw new InterruptedException();
             }
 
-            while(Math.abs(robot.armController.getDistError()) > 3){
-                double error = 270 - robot.drive.theta;
-
-                error = Utils.minAbs(error, error - Math.signum(error) * 360);
-
-                telemetry.addData("Dist", robot.armController.getDist());
-                telemetry.addData("Err", robot.armController.getDistError());
-                telemetry.update();
-
-                robot.drive.setPower(
-                        0.3 * -Math.signum(robot.armController.getDistError()),
-                        0.3 * -Math.signum(robot.driveController.getRotationalCorrection(error))
-                );
-
-                if(isStopRequested()) throw new InterruptedException();
-            }
-            robot.drive.setPower(0,0);
+            positionToBackdrop(270);
 
             robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
 

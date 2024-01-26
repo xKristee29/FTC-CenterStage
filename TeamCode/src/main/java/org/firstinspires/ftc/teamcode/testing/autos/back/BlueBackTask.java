@@ -24,9 +24,28 @@ public class BlueBackTask extends LinearOpMode {
         cv = new KodiCV(telemetry,hardwareMap);
 
         robot.init();
-        robot.drive.setLimits(0.4,0.2);
+        robot.drive.setLimits(0.4,0.25);
     }
 
+    public void positionToBackdrop(double angle){
+        while(Math.abs(robot.armController.getDistError()) > 3){
+            double error = angle - robot.drive.theta;
+
+            error = Utils.minAbs(error, error - Math.signum(error) * 360);
+
+            telemetry.addData("Dist", robot.armController.getDist());
+            telemetry.addData("Err", robot.armController.getDistError());
+            telemetry.update();
+
+            robot.drive.setPower(
+                    0.3 * -Math.tanh(robot.armController.getDistError()),
+                    0.08 * Math.tanh(error)
+            );
+
+            if(isStopRequested()) break;
+        }
+        robot.drive.setPower(0,0);
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -61,15 +80,15 @@ public class BlueBackTask extends LinearOpMode {
                             .goTo(new Point(0,70,270))
                             .goTo(new Point(-63,70,270));
                     break;
-                case RIGHT:
-                    pathRandom = new Path(path1.lastPoint)
-                            .goTo(new Point(0,70,270))
-                            .goTo(new Point(35,70,270));
-                    break;
                 case MIDDLE:
                     pathRandom = new Path(path1.lastPoint)
                             .goTo(new Point(0,70,0))
                             .goTo(new Point(0,130,0));
+                    break;
+                case RIGHT:
+                    pathRandom = new Path(path1.lastPoint)
+                            .goTo(new Point(0,70,270))
+                            .goTo(new Point(35,70,270));
                     break;
             }
 
@@ -98,7 +117,7 @@ public class BlueBackTask extends LinearOpMode {
                     break;
                 case RIGHT:
                     pathRandom = new Path(pathRandom.lastPoint)
-                            .goTo(new Point(-70,85,270));
+                            .goTo(new Point(-70,75,270));
                     break;
             }
 
@@ -109,23 +128,7 @@ public class BlueBackTask extends LinearOpMode {
 
             double error = 2e9;
 
-            while(Math.abs(robot.armController.getDistError()) > 3){
-                error = 270 - robot.drive.theta;
-
-                error = Utils.minAbs(error, error - Math.signum(error) * 360);
-
-                telemetry.addData("Dist", robot.armController.getDist());
-                telemetry.addData("Err", robot.armController.getDistError());
-                telemetry.update();
-
-                robot.drive.setPower(
-                        0.3 * -Math.signum(robot.armController.getDistError()),
-                        0.3 * -Math.signum(robot.driveController.getRotationalCorrection(error))
-                );
-
-                if(isStopRequested()) throw new InterruptedException();
-            }
-            robot.drive.setPower(0,0);
+            positionToBackdrop(270);
 
             robot.armController.setIntakePosition(ArmController.IntakePosition.GRAB);
 
@@ -155,7 +158,7 @@ public class BlueBackTask extends LinearOpMode {
 
             // Ma parchez in stanga
             Path path2 = new Path(path1.lastPoint)
-                    .goTo(new Point(-30,60,200))
+                    .goTo(new Point(-40,60,200))
                     .goTo(new Point(-80,0,270))
                     .goTo(new Point(-130,0));
 
