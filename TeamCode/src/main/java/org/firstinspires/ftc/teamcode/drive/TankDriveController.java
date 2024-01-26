@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.controller.PIDFController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Mat;
@@ -10,14 +11,16 @@ public class TankDriveController {
     TankDriveChassis robot;
     Telemetry telemetry;
 
+    Trigger trig = null;
+
     Path path = null;
 
     Point targetPoint = null;
 
     boolean killController;
 
-    PIDController pidGyro = new PIDController(0, 0, 0);
-    PIDController pidDrive = new PIDController(0, 0, 0);
+    PIDFController pidGyro = new PIDFController(0, 0, 0, 0);
+    PIDFController pidDrive = new PIDFController(0, 0, 0, 0);
 
     public TankDriveController(TankDriveChassis robot, Telemetry telemetry){
         this.robot = robot;
@@ -45,17 +48,19 @@ public class TankDriveController {
     }
 
     public double getDriveCorrection(double error){
-        pidDrive.setPID(ChassisConstants.DRIVE_PID.p,
+        pidDrive.setPIDF(ChassisConstants.DRIVE_PID.p,
                 ChassisConstants.DRIVE_PID.i,
-                ChassisConstants.DRIVE_PID.d);
+                ChassisConstants.DRIVE_PID.d,
+                ChassisConstants.DRIVE_PID.f);
 
         return pidDrive.calculate(error);
     }
 
     public double getRotationalCorrection(double error){
-        pidGyro.setPID(ChassisConstants.HEADING_PID.p,
+        pidGyro.setPIDF(ChassisConstants.HEADING_PID.p,
                 ChassisConstants.HEADING_PID.i,
-                ChassisConstants.HEADING_PID.d);
+                ChassisConstants.HEADING_PID.d,
+                ChassisConstants.HEADING_PID.f);
 
         return pidGyro.calculate(error);
     }
@@ -72,13 +77,15 @@ public class TankDriveController {
 
         robot.updatePosition();
 
-        pidGyro.setPID(ChassisConstants.HEADING_PID.p,
+        pidGyro.setPIDF(ChassisConstants.HEADING_PID.p,
                 ChassisConstants.HEADING_PID.i,
-                ChassisConstants.HEADING_PID.d);
+                ChassisConstants.HEADING_PID.d,
+                ChassisConstants.HEADING_PID.f);
 
-        pidDrive.setPID(ChassisConstants.DRIVE_PID.p,
+        pidDrive.setPIDF(ChassisConstants.DRIVE_PID.p,
                 ChassisConstants.DRIVE_PID.i,
-                ChassisConstants.DRIVE_PID.d);
+                ChassisConstants.DRIVE_PID.d,
+                ChassisConstants.DRIVE_PID.f);
 
         double errorX = targetPoint.x - robot.x;
         double errorY = targetPoint.y - robot.y;
@@ -137,8 +144,8 @@ public class TankDriveController {
 
         Point targetPoint;
 
-        PIDController pidGyro = new PIDController(0, 0, 0);
-        PIDController pidDrive = new PIDController(0, 0, 0);
+        PIDFController pidGyro = new PIDFController(0, 0, 0, 0);
+        PIDFController pidDrive = new PIDFController(0, 0, 0, 0);
 
         public MotionPlayer(Path path){
             this.path = path;
@@ -148,6 +155,7 @@ public class TankDriveController {
 
         @Override
         public void run(){
+            trig = null;
             if(robot.localizerThread != null){
                 while(!Thread.interrupted() && !killController){
 
@@ -159,13 +167,15 @@ public class TankDriveController {
 
                     while(!check && !Thread.interrupted() && !killController){
 
-                        pidGyro.setPID(ChassisConstants.HEADING_PID.p,
+                        pidGyro.setPIDF(ChassisConstants.HEADING_PID.p,
                                 ChassisConstants.HEADING_PID.i,
-                                ChassisConstants.HEADING_PID.d);
+                                ChassisConstants.HEADING_PID.d,
+                                ChassisConstants.HEADING_PID.f);
 
-                        pidDrive.setPID(ChassisConstants.DRIVE_PID.p,
+                        pidDrive.setPIDF(ChassisConstants.DRIVE_PID.p,
                                 ChassisConstants.DRIVE_PID.i,
-                                ChassisConstants.DRIVE_PID.d);
+                                ChassisConstants.DRIVE_PID.d,
+                                ChassisConstants.DRIVE_PID.f);
 
                         double errorX = targetPoint.x - robot.x;
                         double errorY = targetPoint.y - robot.y;
@@ -229,7 +239,10 @@ public class TankDriveController {
 
                         double powerR = Math.tanh(-pidGyro.calculate(error));
 
-                        if(Math.abs(powerR) < 0.2 && pidGyro.getVelocityError() == 0) targetPoint.theta = Double.NaN;
+                        if(Math.abs(powerR) < 0.1 && trig == null) trig = new Trigger((long)ChassisConstants.LIMIT_MS);
+                        if(trig != null){
+                            if(trig.getState() && Math.abs(powerR) < 0.1) targetPoint.theta = Double.NaN;
+                        }
 
                         robot.setPowerRamp(0, powerR);
 

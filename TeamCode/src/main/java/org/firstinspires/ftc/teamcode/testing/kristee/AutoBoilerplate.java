@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.ArmController;
 import org.firstinspires.ftc.teamcode.drive.Robot;
+import org.firstinspires.ftc.teamcode.drive.Utils;
 
 @Autonomous
 public class AutoBoilerplate extends LinearOpMode {
@@ -19,7 +20,27 @@ public class AutoBoilerplate extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
 
         robot.init();
-        robot.drive.setLimits(0.5,0.3);
+        robot.drive.setLimits(0.4,0.25);
+    }
+
+    public void positionToBackdrop(double angle){
+        while(Math.abs(robot.armController.getDistError()) > 3){
+            double error = angle - robot.drive.theta;
+
+            error = Utils.minAbs(error, error - Math.signum(error) * 360);
+
+            telemetry.addData("Dist", robot.armController.getDist());
+            telemetry.addData("Err", robot.armController.getDistError());
+            telemetry.update();
+
+            robot.drive.setPower(
+                    0.3 * -Math.tanh(robot.armController.getDistError()),
+                    0
+            );
+
+            if(isStopRequested()) break;
+        }
+        robot.drive.setPower(0,0);
     }
 
 

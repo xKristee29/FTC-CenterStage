@@ -50,17 +50,13 @@ public class ControlTeleghidat extends LinearOpMode {
                         gp1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
                 double rs = gp1.getLeftX();
 
-                if(gp1.isDown(GamepadKeys.Button.A)){
-                    fs = robot.driveController.getDriveCorrection(
-                            robot.armController.getDistError()
-                    );
-
-                    rs = 0;
+                if(gamepad1.a){
+                    fs = 0.3 * -Math.tanh(robot.armController.getDistError());
                 }
 
-                if(gp1.isDown(GamepadKeys.Button.RIGHT_BUMPER)){
+                if(gamepad1.right_bumper){
                     robot.drive.setPower(fs * 0.3, rs * 0.3);
-                } else if (gp1.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
+                } else if (gamepad1.left_bumper) {
                     robot.drive.setPower(fs, rs * 0.3);
                 } else robot.drive.setPower(fs * 0.5, rs * 0.3);
 
