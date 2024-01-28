@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.testing.sanke.CenterStageCVDetection;
 
 
 @Autonomous(group = "auto")
-public class BlueFrontPixelTask extends LinearOpMode {
+public class BlueFrontTask extends LinearOpMode {
 
     KodiCV cv;
     Robot robot;
@@ -85,17 +85,17 @@ public class BlueFrontPixelTask extends LinearOpMode {
 
                     while(robot.driveController.isRunning()){
                         if(isStopRequested()) throw new InterruptedException();
-                   }
+                    }
 
                     robot.armController.dropPixel();
 
                     Thread.sleep(2000);
 
-                   while(robot.driveController.isRunning()){
+                    while(robot.driveController.isRunning()){
                         if(isStopRequested()) throw new InterruptedException();
                     }
 
-                   Path pathLeft2 = new Path(pathLeft.lastPoint)
+                    Path pathLeft2 = new Path(pathLeft.lastPoint)
                             .goTo(new Point(0,70,0))
                             .goTo(new Point(0,130,270))
                             .goTo(new Point(-80,130,235));

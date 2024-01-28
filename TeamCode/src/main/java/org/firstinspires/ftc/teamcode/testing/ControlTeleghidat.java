@@ -54,11 +54,16 @@ public class ControlTeleghidat extends LinearOpMode {
                     fs = 0.3 * -Math.tanh(robot.armController.getDistError());
                 }
 
+                double xMulti = 0.5;
+                double rMulti = 0.3;
+
                 if(gamepad1.right_bumper){
-                    robot.drive.setPower(fs * 0.3, rs * 0.3);
-                } else if (gamepad1.left_bumper) {
-                    robot.drive.setPower(fs, rs * 0.3);
-                } else robot.drive.setPower(fs * 0.5, rs * 0.3);
+                    xMulti = 0.25; rMulti = 0.25;
+                }
+                if (gamepad1.left_bumper) {
+                    xMulti = 1;
+                }
+                robot.drive.setPower(fs * xMulti, rs * rMulti);
 
                 if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
                     robot.armController.setTarget(ArmController.Position.LEVEL3);
@@ -80,6 +85,12 @@ public class ControlTeleghidat extends LinearOpMode {
 
                 if(gp2.wasJustPressed(GamepadKeys.Button.A)){
                     robot.armController.setTarget(ArmController.Position.HOME);
+                    robot.armController.setIntakePosition(ArmController.IntakePosition.THROW);
+                }
+
+                if(gp2.wasJustPressed(GamepadKeys.Button.B)){
+                    robot.armController.setTarget(ArmController.Position.HOME);
+                    robot.armController.motorBrat.set(1);
                     robot.armController.setIntakePosition(ArmController.IntakePosition.THROW);
                 }
 

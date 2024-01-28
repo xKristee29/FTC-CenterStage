@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Config
 public class ArmController {
 
-    MotorEx motorBrat;
+    public MotorEx motorBrat;
     Servo servoIntake, servoLaunch, servoPixel;
 
     Thread runThread;
@@ -25,7 +25,7 @@ public class ArmController {
     public static double kP = 0.004;
     public static double threshold = 10;
 
-    public static double speedFactor = 0.1;
+    public static double speedFactor = 0.2;
 
     boolean killController;
 
@@ -102,6 +102,7 @@ public class ArmController {
     }
 
     public void setTarget(Position target){
+        motorBrat.set(speedFactor);
         motorBrat.setTargetPosition(target.val);
         if(target == Position.LEVEL1){
             targetDist = PositionDistance.LEVEL1.val;
