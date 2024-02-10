@@ -29,7 +29,7 @@ public class PathUnitTest extends LinearOpMode {
 
         robot.init();
 
-        robot.setLimits(0.5,0.3);
+        robot.setLimits(0.5,0.5);
 
         controller = new TankDriveController(robot,telemetry);
 
@@ -49,14 +49,15 @@ public class PathUnitTest extends LinearOpMode {
             robot.startAsyncLocalization();
 
             Path path = new Path(new Point(0,0))
+                    .goTo(0,130)
+                    .goTo(-150,130)
+                    .goTo(-210,60)
+                    .goTo(-180,30)
+                    .goTo(-170,50)
+                    .goTo(10,50)
+                    .goTo(0,0,0);
                     //.goTo(new Point(-60, 100, 270));
-                    .customSplineTo(new Point(-60, 100, 270),
-                            0.5,
-                            0.12,
-                            0.03,
-                            0.02,
-                            2
-                    );//*/
+                    //*/
 
             controller.run(path);
 

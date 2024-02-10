@@ -54,14 +54,14 @@ public class ControlTeleghidat extends LinearOpMode {
                     fs = 0.3 * -Math.tanh(robot.armController.getDistError());
                 }
 
-                double xMulti = 0.5;
+                double xMulti = 0.4;
                 double rMulti = 0.3;
 
                 if(gamepad1.right_bumper){
                     xMulti = 0.25; rMulti = 0.25;
                 }
                 if (gamepad1.left_bumper) {
-                    xMulti = 1;
+                    xMulti = 0.5;
                 }
                 robot.drive.setPower(fs * xMulti, rs * rMulti);
 

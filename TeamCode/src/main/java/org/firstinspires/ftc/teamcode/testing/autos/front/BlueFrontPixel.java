@@ -23,8 +23,9 @@ public class BlueFrontPixel extends LinearOpMode {
         robot.drive.setLimits(0.4,0.25);
     }
     public void positionToBackdrop(double angle){
-        while(Math.abs(robot.armController.getDistError()) > 3){
-            double error = angle - robot.drive.theta;
+        double error = 2e9;
+        while(Math.abs(robot.armController.getDistError()) > 3 || Math.abs(error) > 2){
+            error = angle - robot.drive.theta;
 
             error = Utils.minAbs(error, error - Math.signum(error) * 360);
 

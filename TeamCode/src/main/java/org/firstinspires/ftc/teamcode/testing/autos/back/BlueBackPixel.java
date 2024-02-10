@@ -58,7 +58,7 @@ public class BlueBackPixel extends LinearOpMode {
 
             // Se duce in fata tablei
             Path path1 = new Path(new Point(0,0))
-                    .goTo(new Point(0,67,270))
+                    .goTo(new Point(0,67))
                     .goTo(new Point(-60,67,270));
 
             robot.driveController.run(path1);

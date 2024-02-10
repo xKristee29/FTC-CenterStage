@@ -28,8 +28,9 @@ public class BlueBackTask extends LinearOpMode {
     }
 
     public void positionToBackdrop(double angle){
-        while(Math.abs(robot.armController.getDistError()) > 3){
-            double error = angle - robot.drive.theta;
+        double error = 2e9;
+        while(Math.abs(robot.armController.getDistError()) > 3 || Math.abs(error) > 2){
+            error = angle - robot.drive.theta;
 
             error = Utils.minAbs(error, error - Math.signum(error) * 360);
 
@@ -83,12 +84,12 @@ public class BlueBackTask extends LinearOpMode {
                 case MIDDLE:
                     pathRandom = new Path(path1.lastPoint)
                             .goTo(new Point(0,70,0))
-                            .goTo(new Point(0,130,0));
+                            .goTo(new Point(0,125,0));
                     break;
                 case RIGHT:
                     pathRandom = new Path(path1.lastPoint)
                             .goTo(new Point(0,70,270))
-                            .goTo(new Point(35,70,270));
+                            .goTo(new Point(30,70,270));
                     break;
             }
 

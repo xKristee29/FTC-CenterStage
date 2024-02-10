@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Path {
 
     public Queue<Point> waypoints = new LinkedList<>();
+    public ArrayList<Point> wps = new ArrayList<Point>();
 
     public Point lastPoint;
 
@@ -13,6 +15,7 @@ public class Path {
 
     public Path(Point startPoint){
         lastPoint = startPoint;
+        wps.add(startPoint);
     }
 
     public Point getLastPoint(){
@@ -21,9 +24,18 @@ public class Path {
 
     public Path goTo(Point waypoint){
         waypoints.add(waypoint);
+        wps.add(waypoint);
         lastPoint = waypoint;
         k++;
         return this;
+    }
+
+    public Path goTo(double x, double y){
+        return goTo(new Point(x,y));
+    }
+
+    public Path goTo(double x, double y, double theta){
+        return goTo(new Point(x,y,theta));
     }
 
     public Point calculateBezierPoint(double t, Point p0, Point p1, Point p2, Point p3){

@@ -84,6 +84,12 @@ public class TankDriveChassis {
         motorPowerLeft = fs + rs;
         motorPowerRight = fs - rs;
 
+        double maxPower = Math.max(Math.abs(motorPowerLeft),Math.abs(motorPowerRight));
+        maxPower = Math.max(maxPower, 1);
+
+        motorPowerLeft /= maxPower;
+        motorPowerRight /= maxPower;
+
         leftMotor.set(motorPowerLeft);
         rightMotor.set(motorPowerRight);
     }
@@ -109,6 +115,12 @@ public class TankDriveChassis {
             motorPowerRight += accelerationFactor * Math.signum(deltaRight);
         }
         else motorPowerRight = targetPowerRight;
+
+        double maxPower = Math.max(Math.abs(motorPowerLeft),Math.abs(motorPowerRight));
+        maxPower = Math.max(maxPower, 1);
+
+        motorPowerLeft /= maxPower;
+        motorPowerRight /= maxPower;
 
         leftMotor.set(motorPowerLeft);
         rightMotor.set(motorPowerRight);

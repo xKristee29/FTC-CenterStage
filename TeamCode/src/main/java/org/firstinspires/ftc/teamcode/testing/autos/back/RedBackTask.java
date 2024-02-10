@@ -28,8 +28,9 @@ public class RedBackTask extends LinearOpMode {
     }
 
     public void positionToBackdrop(double angle){
-        while(Math.abs(robot.armController.getDistError()) > 3){
-            double error = angle - robot.drive.theta;
+        double error = 2e9;
+        while(Math.abs(robot.armController.getDistError()) > 3 || Math.abs(error) > 2){
+            error = angle - robot.drive.theta;
 
             error = Utils.minAbs(error, error - Math.signum(error) * 360);
 
@@ -83,12 +84,11 @@ public class RedBackTask extends LinearOpMode {
                 case MIDDLE:
                     pathRandom = new Path(path1.lastPoint)
                             .goTo(new Point(0,70,0))
-                            .goTo(new Point(0,130,0));
+                            .goTo(new Point(0,125,0));
                     break;
                 case RIGHT:
                     pathRandom = new Path(path1.lastPoint)
-                            .goTo(new Point(0,70,270))
-                            .goTo(new Point(28,70,270));
+                            .goTo(new Point(63,70));
                     break;
             }
 
@@ -112,12 +112,13 @@ public class RedBackTask extends LinearOpMode {
                     pathRandom = new Path(pathRandom.lastPoint)
                             .goTo(new Point(0,150,0))
                             .goTo(new Point(0,130,0))
-                            .goTo(new Point(40,110))
+                            .goTo(new Point(40,110, 90))
                             .goTo(new Point(70,63,90));
                     break;
                 case RIGHT:
                     pathRandom = new Path(pathRandom.lastPoint)
-                            .goTo(new Point(70,52,270));
+                            .goTo(new Point(70,100,145))
+                            .goTo(new Point(70,52,90));
                     break;
             }
 

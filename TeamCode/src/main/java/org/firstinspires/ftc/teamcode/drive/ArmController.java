@@ -25,14 +25,14 @@ public class ArmController {
     public static double kP = 0.004;
     public static double threshold = 10;
 
-    public static double speedFactor = 0.2;
+    public static double speedFactor = 0.15;
 
     boolean killController;
 
     public static enum Position{
         HOME(0),
-        LEVEL1(3500),
-        LEVEL2(3100),
+        LEVEL1(3850),
+        LEVEL2(3300),
         HANG(2100),
         LEVEL3(2800),
         AUTOPIXEL(3700);
